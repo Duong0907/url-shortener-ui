@@ -10,7 +10,8 @@
     "test": "jest --watchman=false",
     "test:coverage": "jest --coverage --watchman=false",
     "format": "prettier --write .",
-    "format:check": "prettier --check ."
+    "format:check": "prettier --check .",
+    "typecheck": "next typegen && tsc --noEmit"
   },
   "dependencies": {
     "@base-ui/react": "^1.9.0",
