@@ -14,7 +14,10 @@ export function LinkTag({ link }: { link: LinkResponse | null }) {
   return (
     <article
       aria-live="polite"
-      className="relative -rotate-2 rounded-2xl border-[1.5px] border-foreground bg-card py-5 pr-5 pl-11 shadow-[6px_6px_0_var(--foreground)] transition-transform duration-300 hover:rotate-0 motion-reduce:transition-none"
+      className={cn(
+        "relative -rotate-2 rounded-2xl border-[1.5px] border-foreground bg-card py-5 pr-5 pl-11 shadow-[6px_6px_0_var(--foreground)] transition-transform duration-300 hover:rotate-0 motion-reduce:transition-none",
+        link && "animate-in fade-in zoom-in-90 duration-500 motion-reduce:animate-none",
+      )}
     >
       <span
         aria-hidden
