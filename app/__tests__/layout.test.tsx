@@ -21,5 +21,6 @@ describe("RootLayout", () => {
     expect(html).toContain('lang="en"');
     expect(html).toContain("f-display f-body f-code");
     expect(html).toContain("<p>kid</p>");
+    expect(html).toContain('href="/"');
   });
 });
