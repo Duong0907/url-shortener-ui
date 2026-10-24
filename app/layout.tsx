@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import { Bricolage_Grotesque, Instrument_Sans, JetBrains_Mono } from "next/font/google";
 import Link from "next/link";
 
-import { UserMenu } from "@/features/auth/user-menu";
+import { UserMenu } from "@/features/auth/components/user-menu";
 
 import "./globals.css";
 

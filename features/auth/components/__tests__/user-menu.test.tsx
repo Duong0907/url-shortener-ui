@@ -2,8 +2,8 @@ import { StrictMode } from "react";
 import { render, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 
+import { UserMenu } from "@/features/auth/components/user-menu";
 import { useAuth } from "@/features/auth/store";
-import { UserMenu } from "@/features/auth/user-menu";
 
 // jsdom has no Response, so fetch returns plain objects.
 const reply = (status: number, body: unknown = {}) => ({

@@ -28,6 +28,7 @@ export function refreshSession(): Promise<string | null> {
     .catch(() => null)
     .then((token) => {
       apply(token);
+
       return token;
     })
     .finally(() => {
@@ -38,11 +39,6 @@ export function refreshSession(): Promise<string | null> {
 
 export async function login(email: string, password: string): Promise<void> {
   apply(await api.login(email, password));
-}
-
-export async function register(email: string, password: string): Promise<void> {
-  await api.register(email, password);
-  await login(email, password);
 }
 
 export async function logout(): Promise<void> {

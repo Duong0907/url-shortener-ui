@@ -1,4 +1,4 @@
-import { login, logout, refreshSession, register, useAuth } from "@/features/auth/store";
+import { login, logout, refreshSession, useAuth } from "@/features/auth/store";
 
 // jsdom has no Response, so fetch returns plain objects.
 const reply = (status: number, body: unknown = {}) => ({
@@ -57,17 +57,6 @@ describe("login", () => {
     fetchMock.mockResolvedValueOnce(reply(401));
     await expect(login("a@b.co", "pw")).rejects.toThrow("Wrong email or password");
     expect(state().status).toBe("loading");
-  });
-});
-
-describe("register", () => {
-  it("registers, then logs in with the same credentials", async () => {
-    fetchMock
-      .mockResolvedValueOnce(reply(201, { id: "1", email: "a@b.co" }))
-      .mockResolvedValueOnce(reply(200, { accessToken: jwt("a@b.co") }));
-    await register("a@b.co", "password123");
-    expect(urls()).toEqual(["/api/auth/register", "/api/auth/login"]);
-    expect(state().status).toBe("authed");
   });
 });
 

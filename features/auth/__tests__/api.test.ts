@@ -1,4 +1,14 @@
-import { emailFromToken, login, logout, refresh, register } from "@/features/auth/api";
+import {
+  emailFromToken,
+  EmailNotVerifiedError,
+  EmailTakenError,
+  login,
+  logout,
+  refresh,
+  register,
+  resendVerification,
+  verifyEmail,
+} from "@/features/auth/api";
 
 // jsdom has no Response, so fetch returns plain objects.
 const reply = (status: number, body: unknown = {}) => ({
@@ -20,30 +30,30 @@ const post = (body?: unknown) => ({
 });
 
 describe("register", () => {
-  it("posts the credentials", async () => {
-    fetchMock.mockResolvedValue(reply(201, { id: "1", email: "a@b.co" }));
-    await expect(register("a@b.co", "password123")).resolves.toBeUndefined();
+  it("posts the credentials and the confirmation", async () => {
+    fetchMock.mockResolvedValue(reply(201, { id: "1", email: "a@b.co", emailVerified: false }));
+    await expect(register("a@b.co", "password123", "password123")).resolves.toBeUndefined();
     expect(fetchMock).toHaveBeenCalledWith(
       "/api/auth/register",
-      post({ email: "a@b.co", password: "password123" }),
+      post({ email: "a@b.co", password: "password123", confirmPassword: "password123" }),
     );
   });
 
-  it("maps 409 to the taken message", async () => {
+  it("throws EmailTakenError on 409", async () => {
     fetchMock.mockResolvedValue(reply(409));
-    await expect(register("a@b.co", "password123")).rejects.toThrow(
-      "That email is already registered",
-    );
+    const err = await register("a@b.co", "password123", "password123").catch((e) => e);
+    expect(err).toBeInstanceOf(EmailTakenError);
+    expect(err.message).toBe("That email is already registered.");
   });
 
   it("maps 400 to the invalid message", async () => {
     fetchMock.mockResolvedValue(reply(400));
-    await expect(register("a", "x")).rejects.toThrow("Check your email and password");
+    await expect(register("a", "x", "x")).rejects.toThrow("Check your email and password");
   });
 
   it("maps other failures to the generic message", async () => {
     fetchMock.mockResolvedValue(reply(500));
-    await expect(register("a@b.co", "password123")).rejects.toThrow(
+    await expect(register("a@b.co", "password123", "password123")).rejects.toThrow(
       "Something went wrong. Try again",
     );
   });
@@ -62,6 +72,13 @@ describe("login", () => {
   it("maps 401 to the wrong credentials message", async () => {
     fetchMock.mockResolvedValue(reply(401));
     await expect(login("a@b.co", "pw")).rejects.toThrow("Wrong email or password");
+  });
+
+  it("throws EmailNotVerifiedError on 403", async () => {
+    fetchMock.mockResolvedValue(reply(403));
+    const err = await login("a@b.co", "pw").catch((e) => e);
+    expect(err).toBeInstanceOf(EmailNotVerifiedError);
+    expect(err.message).toBe("Verify your email first. Check your inbox.");
   });
 
   it("maps other failures to the generic message", async () => {
@@ -114,5 +131,44 @@ describe("emailFromToken", () => {
 
   it("returns null for a malformed token", () => {
     expect(emailFromToken("garbage")).toBeNull();
+  });
+});
+
+describe("verifyEmail", () => {
+  it("posts the token and returns true on 204", async () => {
+    fetchMock.mockResolvedValue(reply(204));
+    await expect(verifyEmail("t")).resolves.toBe(true);
+    expect(fetchMock).toHaveBeenCalledWith("/api/auth/verify-email", post({ token: "t" }));
+  });
+
+  it("returns false on 400", async () => {
+    fetchMock.mockResolvedValue(reply(400));
+    await expect(verifyEmail("t")).resolves.toBe(false);
+  });
+
+  it("throws the generic message on other failures", async () => {
+    fetchMock.mockResolvedValue(reply(500));
+    await expect(verifyEmail("t")).rejects.toThrow("Something went wrong. Try again");
+  });
+});
+
+describe("resendVerification", () => {
+  it("posts the email", async () => {
+    fetchMock.mockResolvedValue(reply(204));
+    await expect(resendVerification("a@b.co")).resolves.toBeUndefined();
+    expect(fetchMock).toHaveBeenCalledWith(
+      "/api/auth/resend-verification",
+      post({ email: "a@b.co" }),
+    );
+  });
+
+  it("maps 400 to the invalid email message", async () => {
+    fetchMock.mockResolvedValue(reply(400));
+    await expect(resendVerification("nope")).rejects.toThrow("Enter a valid email");
+  });
+
+  it("maps other failures to the generic message", async () => {
+    fetchMock.mockResolvedValue(reply(500));
+    await expect(resendVerification("a@b.co")).rejects.toThrow("Something went wrong. Try again");
   });
 });

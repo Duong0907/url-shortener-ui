@@ -1,16 +1,18 @@
 "use client";
 
-import { useEffect, useState } from "react";
-import Link from "next/link";
-import { useRouter } from "next/navigation";
+import { useState } from "react";
 
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
+import { Link } from "@/components/ui/link";
 import { Typography } from "@/components/ui/typography";
-import { login, register, useAuth } from "@/features/auth/store";
+import { EmailNotVerifiedError, EmailTakenError, register } from "@/features/auth/api";
+import { ResendButton } from "@/features/auth/components/resend-button";
+import { login } from "@/features/auth/store";
+import { useRedirectIfSignedIn } from "@/features/auth/use-redirect-if-signed-in";
 
-const copy = {
+const textsByMode = {
   login: {
     title: "Log in",
     submit: "Log in",
@@ -32,35 +34,73 @@ const copy = {
 } as const;
 
 export function AuthForm({ mode }: { mode: "login" | "register" }) {
-  const status = useAuth((s) => s.status);
-  const router = useRouter();
+  useRedirectIfSignedIn();
+
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [confirm, setConfirm] = useState("");
   const [showPassword, setShowPassword] = useState(false);
-  const [error, setError] = useState<string | null>(null);
+  const [error, setError] = useState<Error | null>(null);
   const [loading, setLoading] = useState(false);
-  const text = copy[mode];
-
-  // Covers both a fresh login and opening this page while signed in.
-  useEffect(() => {
-    if (status === "authed") router.replace("/");
-  }, [status, router]);
+  const [sentTo, setSentTo] = useState<string | null>(null);
+  const text = textsByMode[mode];
+  const passwordType = showPassword ? "text" : "password";
 
   async function submit(e: React.FormEvent) {
     e.preventDefault();
-    if (mode === "register" && password.length < 8) {
-      setError("Password needs at least 8 characters");
-      return;
+
+    if (mode === "register") {
+      const problem =
+        password.length < 8
+          ? "Password needs at least 8 characters"
+          : password !== confirm
+            ? "Passwords don't match"
+            : null;
+
+      if (problem) {
+        setError(new Error(problem));
+        return;
+      }
     }
+
     setLoading(true);
     setError(null);
+
     try {
-      await (mode === "login" ? login : register)(email.trim(), password);
-      // Stay in the loading state; the effect above navigates away.
+      if (mode === "login") {
+        await login(email.trim(), password);
+
+        // Stay in the loading state;
+        // useRedirectIfSignedIn navigates away.
+        return;
+      }
+
+      await register(email.trim(), password, confirm);
+
+      setSentTo(email.trim());
     } catch (err) {
-      setError((err as Error).message);
-      setLoading(false);
+      setError(err as Error);
     }
+    setLoading(false);
+  }
+
+  // Register succeeded. Login stays blocked (403) until the user opens the mailed link.
+  if (sentTo) {
+    return (
+      <Card className="w-full max-w-sm">
+        <CardHeader>
+          <Typography as="h1" variant="h3">
+            Check your email
+          </Typography>
+        </CardHeader>
+        <CardContent className="space-y-4">
+          <Typography role="status">
+            We sent a link to <strong>{sentTo}</strong>.
+          </Typography>
+          <ResendButton email={sentTo} />
+        </CardContent>
+      </Card>
+    );
   }
 
   return (
@@ -95,7 +135,7 @@ export function AuthForm({ mode }: { mode: "login" | "register" }) {
             <div className="relative">
               <Input
                 id="password"
-                type={showPassword ? "text" : "password"}
+                type={passwordType}
                 autoComplete={text.autoComplete}
                 maxLength={72}
                 required
@@ -116,20 +156,46 @@ export function AuthForm({ mode }: { mode: "login" | "register" }) {
               </Button>
             </div>
           </div>
+          {mode === "register" && (
+            <div className="space-y-1.5">
+              <label htmlFor="confirm-password" className="text-sm font-medium">
+                Confirm password
+              </label>
+              <Input
+                id="confirm-password"
+                type={passwordType}
+                autoComplete="new-password"
+                maxLength={72}
+                required
+                className="h-11"
+                value={confirm}
+                onChange={(e) => setConfirm(e.target.value)}
+                readOnly={loading}
+              />
+            </div>
+          )}
           {error && (
-            <Typography as="p" variant="small" role="alert" className="text-destructive">
-              {error}
-            </Typography>
+            <div className="space-y-2">
+              <Typography as="p" variant="small" role="alert" className="text-destructive">
+                {error.message}
+                {error instanceof EmailTakenError && (
+                  <>
+                    &nbsp;
+                    <Link href="/login">Log in instead</Link>
+                  </>
+                )}
+              </Typography>
+              {error instanceof EmailNotVerifiedError && <ResendButton key={email} email={email} />}
+            </div>
           )}
           <Button type="submit" className="h-11 w-full" disabled={loading}>
             {loading ? text.busy : text.submit}
           </Button>
         </form>
         <Typography as="p" variant="small" className="text-center text-muted-foreground">
-          {text.prompt}{" "}
-          <Link href={text.href} className="text-primary underline-offset-4 hover:underline">
-            {text.other}
-          </Link>
+          {text.prompt}
+          &nbsp;
+          <Link href={text.href}>{text.other}</Link>
         </Typography>
       </CardContent>
     </Card>
