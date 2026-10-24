@@ -80,4 +80,16 @@ describe("ShortenForm", () => {
     await user.click(screen.getByRole("button", { name: "Shorten" }));
     expect(screen.getByRole("alert")).toHaveTextContent("That URL isn't valid");
   });
+
+  it("replays the new-link animation when the same URL is shortened again", async () => {
+    fetchMock.mockResolvedValue(reply(201, link));
+    const user = await submit("https://example.com");
+    const first = (await screen.findByRole("link", { name: link.shortUrl })).closest("article");
+
+    await user.click(screen.getByRole("button", { name: "Shorten" }));
+    await screen.findByRole("button", { name: "Shorten" });
+    const second = screen.getByRole("link", { name: link.shortUrl }).closest("article");
+    expect(second).not.toBe(first);
+    expect(second).toHaveClass("animate-in");
+  });
 });
