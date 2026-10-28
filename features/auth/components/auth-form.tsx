@@ -1,13 +1,13 @@
 "use client";
 
 import { useState } from "react";
+import Link from "next/link";
 
-import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardHeader } from "@/components/ui/card";
+import { Button, buttonVariants } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Link } from "@/components/ui/link";
 import { Typography } from "@/components/ui/typography";
 import { EmailNotVerifiedError, EmailTakenError, register } from "@/features/auth/api";
+import { AuthShell } from "@/features/auth/components/auth-shell";
 import { ResendButton } from "@/features/auth/components/resend-button";
 import { login } from "@/features/auth/store";
 import { useRedirectIfSignedIn } from "@/features/auth/use-redirect-if-signed-in";
@@ -15,6 +15,7 @@ import { useRedirectIfSignedIn } from "@/features/auth/use-redirect-if-signed-in
 const textsByMode = {
   login: {
     title: "Log in",
+    lead: "Log in to manage your links.",
     submit: "Log in",
     busy: "Logging in…",
     prompt: "No account yet?",
@@ -24,6 +25,7 @@ const textsByMode = {
   },
   register: {
     title: "Create account",
+    lead: "Create an account to save your links.",
     submit: "Sign up",
     busy: "Signing up…",
     prompt: "Have an account?",
@@ -32,6 +34,9 @@ const textsByMode = {
     autoComplete: "new-password",
   },
 } as const;
+
+const linkClass = buttonVariants({ variant: "link" });
+const labelClass = "text-sm leading-none font-medium";
 
 export function AuthForm({ mode }: { mode: "login" | "register" }) {
   useRedirectIfSignedIn();
@@ -87,117 +92,116 @@ export function AuthForm({ mode }: { mode: "login" | "register" }) {
   // Register succeeded. Login stays blocked (403) until the user opens the mailed link.
   if (sentTo) {
     return (
-      <Card className="w-full max-w-sm">
-        <CardHeader>
-          <Typography as="h1" variant="h3">
-            Check your email
-          </Typography>
-        </CardHeader>
-        <CardContent className="space-y-4">
-          <Typography role="status">
+      <AuthShell
+        title="Check your email"
+        aside={
+          <Typography role="status" className="text-muted-foreground">
             We sent a link to <strong>{sentTo}</strong>.
           </Typography>
-          <ResendButton email={sentTo} />
-        </CardContent>
-      </Card>
+        }
+      >
+        <ResendButton email={sentTo} />
+      </AuthShell>
     );
   }
 
   return (
-    <Card className="w-full max-w-sm">
-      <CardHeader>
-        <Typography as="h1" variant="h3">
-          {text.title}
-        </Typography>
-      </CardHeader>
-      <CardContent className="space-y-4">
-        <form onSubmit={submit} className="space-y-4">
-          <div className="space-y-1.5">
-            <label htmlFor="email" className="text-sm font-medium">
-              Email
+    <AuthShell
+      title={text.title}
+      aside={
+        <>
+          <Typography className="text-muted-foreground">{text.lead}</Typography>
+          <Typography className="text-sm">
+            {text.prompt}
+            &nbsp;
+            <Link href={text.href} className={linkClass}>
+              {text.other}
+            </Link>
+          </Typography>
+        </>
+      }
+    >
+      <form onSubmit={submit} className="flex flex-col gap-4">
+        <div className="flex flex-col gap-1.5">
+          <label htmlFor="email" className={labelClass}>
+            Email
+          </label>
+          <Input
+            id="email"
+            type="email"
+            autoComplete="email"
+            autoFocus
+            required
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
+            readOnly={loading}
+          />
+        </div>
+        <div className="flex flex-col gap-1.5">
+          <label htmlFor="password" className={labelClass}>
+            Password
+          </label>
+          <div className="relative">
+            <Input
+              id="password"
+              type={passwordType}
+              autoComplete={text.autoComplete}
+              maxLength={72}
+              required
+              className="pr-20"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              readOnly={loading}
+            />
+            <Button
+              type="button"
+              variant="ghost"
+              size="xs"
+              className="absolute inset-y-0 right-2 my-auto"
+              aria-label={showPassword ? "Hide password" : "Show password"}
+              onClick={() => setShowPassword((s) => !s)}
+            >
+              {showPassword ? "Hide" : "Show"}
+            </Button>
+          </div>
+        </div>
+        {mode === "register" && (
+          <div className="flex flex-col gap-1.5">
+            <label htmlFor="confirm-password" className={labelClass}>
+              Confirm password
             </label>
             <Input
-              id="email"
-              type="email"
-              autoComplete="email"
-              autoFocus
+              id="confirm-password"
+              type={passwordType}
+              autoComplete="new-password"
+              maxLength={72}
               required
-              className="h-11"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
+              value={confirm}
+              onChange={(e) => setConfirm(e.target.value)}
               readOnly={loading}
             />
           </div>
-          <div className="space-y-1.5">
-            <label htmlFor="password" className="text-sm font-medium">
-              Password
-            </label>
-            <div className="relative">
-              <Input
-                id="password"
-                type={passwordType}
-                autoComplete={text.autoComplete}
-                maxLength={72}
-                required
-                className="h-11 pr-16"
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-                readOnly={loading}
-              />
-              <Button
-                type="button"
-                variant="ghost"
-                size="sm"
-                className="absolute inset-y-0 right-2 my-auto"
-                aria-label={showPassword ? "Hide password" : "Show password"}
-                onClick={() => setShowPassword((s) => !s)}
-              >
-                {showPassword ? "Hide" : "Show"}
-              </Button>
-            </div>
+        )}
+        {error && (
+          <div className="flex flex-col gap-2">
+            <Typography role="alert" className="text-sm text-destructive">
+              {error.message}
+              {error instanceof EmailTakenError && (
+                <>
+                  &nbsp;
+                  <Link href="/login" className={linkClass}>
+                    Log in instead
+                  </Link>
+                </>
+              )}
+            </Typography>
+            {error instanceof EmailNotVerifiedError && <ResendButton key={email} email={email} />}
           </div>
-          {mode === "register" && (
-            <div className="space-y-1.5">
-              <label htmlFor="confirm-password" className="text-sm font-medium">
-                Confirm password
-              </label>
-              <Input
-                id="confirm-password"
-                type={passwordType}
-                autoComplete="new-password"
-                maxLength={72}
-                required
-                className="h-11"
-                value={confirm}
-                onChange={(e) => setConfirm(e.target.value)}
-                readOnly={loading}
-              />
-            </div>
-          )}
-          {error && (
-            <div className="space-y-2">
-              <Typography as="p" variant="small" role="alert" className="text-destructive">
-                {error.message}
-                {error instanceof EmailTakenError && (
-                  <>
-                    &nbsp;
-                    <Link href="/login">Log in instead</Link>
-                  </>
-                )}
-              </Typography>
-              {error instanceof EmailNotVerifiedError && <ResendButton key={email} email={email} />}
-            </div>
-          )}
-          <Button type="submit" className="h-11 w-full" disabled={loading}>
-            {loading ? text.busy : text.submit}
-          </Button>
-        </form>
-        <Typography as="p" variant="small" className="text-center text-muted-foreground">
-          {text.prompt}
-          &nbsp;
-          <Link href={text.href}>{text.other}</Link>
-        </Typography>
-      </CardContent>
-    </Card>
+        )}
+        <Button type="submit" size="lg" className="w-full" disabled={loading}>
+          {loading ? text.busy : text.submit}
+        </Button>
+      </form>
+    </AuthShell>
   );
 }

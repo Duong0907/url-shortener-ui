@@ -1,46 +1,54 @@
 "use client";
 
-import { useState } from "react";
 import { cn } from "cn";
 
-import { Button } from "@/components/ui/button";
-import { Typography, typographyVariants } from "@/components/ui/typography";
+import { CopyButton } from "@/components/copy-button";
+import { Badge } from "@/components/ui/badge";
+import { Card } from "@/components/ui/card";
+import { Typography } from "@/components/ui/typography";
 import type { LinkResponse } from "@/features/shorten/api";
 
 const fmtDate = (iso: string) =>
   new Date(iso).toLocaleDateString(undefined, { day: "numeric", month: "short", year: "numeric" });
+
+const eyebrow = "text-xs tracking-wider text-muted-foreground uppercase";
 
 export function LinkTag({ link }: { link: LinkResponse | null }) {
   return (
     <article
       aria-live="polite"
       className={cn(
-        "relative -rotate-2 rounded-2xl border-[1.5px] border-foreground bg-card py-5 pr-5 pl-11 shadow-[6px_6px_0_var(--foreground)] transition-transform duration-300 hover:rotate-0 motion-reduce:transition-none",
-        link && "animate-in fade-in zoom-in-90 duration-500 motion-reduce:animate-none",
+        link && "animate-in duration-500 fade-in slide-in-from-bottom-2 motion-reduce:animate-none",
       )}
     >
-      <span
-        aria-hidden
-        className="absolute top-1/2 left-4 size-3.5 -translate-y-1/2 rounded-full border-[1.5px] border-foreground bg-background"
-      />
-      <Typography variant="overline">Short link</Typography>
-      {link ? (
-        <ShortLink link={link} />
-      ) : (
-        <Typography as="p" variant="code" className="text-muted-foreground">
-          your-link
-        </Typography>
-      )}
+      <Card>
+        <Typography className={eyebrow}>Short link</Typography>
+        {link ? (
+          <ShortLink link={link} />
+        ) : (
+          <Typography as="p" variant="h3" className="text-muted-foreground">
+            your-link
+          </Typography>
+        )}
 
-      <dl className="mt-4 grid grid-cols-3 gap-4 border-t-[1.5px] border-dashed pt-3 text-sm">
-        <Meta label="Created">{link ? fmtDate(link.createdAt) : "—"}</Meta>
-        <Meta label="Expires">
-          {link ? (link.expiresAt ? fmtDate(link.expiresAt) : "Never") : "—"}
-        </Meta>
-        <Meta label="Status">{link ? <StatusBadge active={link.active} /> : "—"}</Meta>
-      </dl>
+        <dl className="grid grid-cols-3 gap-4 border-t border-border pt-3">
+          <Meta label="Created">{link ? fmtDate(link.createdAt) : "—"}</Meta>
+          <Meta label="Expires">
+            {link ? (link.expiresAt ? fmtDate(link.expiresAt) : "Never") : "—"}
+          </Meta>
+          <Meta label="Status">
+            {link ? (
+              <Badge variant={link.active ? "success" : "secondary"}>
+                {link.active ? "Active" : "Inactive"}
+              </Badge>
+            ) : (
+              "—"
+            )}
+          </Meta>
+        </dl>
 
-      {link && <CopyButton text={link.shortUrl} />}
+        {link && <CopyButton text={link.shortUrl} className="self-start" />}
+      </Card>
     </article>
   );
 }
@@ -52,14 +60,9 @@ function ShortLink({ link }: { link: LinkResponse }) {
       aria-label={link.shortUrl}
       target="_blank"
       rel="noreferrer"
-      className={cn(
-        typographyVariants({ variant: "code", weight: "semibold" }),
-        "block underline-offset-4 hover:underline",
-      )}
+      className="rounded-sm text-2xl break-all transition-colors outline-none hover:text-highlight focus-visible:ring-2 focus-visible:ring-highlight"
     >
-      <span className="font-normal text-muted-foreground">
-        {link.shortUrl.slice(0, -link.slug.length)}
-      </span>
+      <span className="text-muted-foreground">{link.shortUrl.slice(0, -link.slug.length)}</span>
       {link.slug}
     </a>
   );
@@ -67,41 +70,13 @@ function ShortLink({ link }: { link: LinkResponse }) {
 
 function Meta({ label, children }: { label: string; children: React.ReactNode }) {
   return (
-    <div>
-      <Typography as="dt" variant="overline">
+    <div className="flex flex-col gap-1">
+      <Typography as="dt" className={eyebrow}>
         {label}
       </Typography>
-      <Typography as="dd" variant="small" weight="semibold" className="tabular-nums">
+      <Typography as="dd" className="text-sm tabular-nums">
         {children}
       </Typography>
     </div>
-  );
-}
-
-function StatusBadge({ active }: { active: boolean }) {
-  return (
-    <span
-      className={`inline-flex items-center gap-1.5 rounded-full px-2.5 py-0.5 text-xs font-semibold before:size-1.5 before:rounded-full before:bg-current ${
-        active ? "bg-primary/10 text-primary" : "bg-muted text-muted-foreground"
-      }`}
-    >
-      {active ? "Active" : "Inactive"}
-    </span>
-  );
-}
-
-function CopyButton({ text }: { text: string }) {
-  const [copied, setCopied] = useState(false);
-
-  async function copy() {
-    await navigator.clipboard.writeText(text);
-    setCopied(true);
-    setTimeout(() => setCopied(false), 2000);
-  }
-
-  return (
-    <Button type="button" variant="outline" className="mt-4 h-10" onClick={copy}>
-      {copied ? "Copied" : "Copy"}
-    </Button>
   );
 }

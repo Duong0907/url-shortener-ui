@@ -12,4 +12,9 @@ describe("Input", () => {
     await userEvent.type(input, "hello");
     expect(input).toHaveValue("hello");
   });
+
+  it("is a 44px control with a highlight focus ring", () => {
+    render(<Input aria-label="url" />);
+    expect(screen.getByLabelText("url")).toHaveClass("h-11", "focus-visible:ring-highlight");
+  });
 });

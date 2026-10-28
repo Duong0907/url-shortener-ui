@@ -37,7 +37,7 @@ describe("AuthForm login", () => {
     fetchMock.mockResolvedValueOnce(reply(200, { accessToken: jwt("a@b.co") }));
     const user = await fill("login", "pw");
     await user.click(screen.getByRole("button", { name: "Log in" }));
-    await waitFor(() => expect(mockReplace).toHaveBeenCalledWith("/"));
+    await waitFor(() => expect(mockReplace).toHaveBeenCalledWith("/app/shorten"));
     expect(fetchMock.mock.calls[0]).toEqual([
       "/api/auth/login",
       expect.objectContaining({ body: JSON.stringify({ email: "a@b.co", password: "pw" }) }),
@@ -78,7 +78,7 @@ describe("AuthForm login", () => {
   it("goes home when already signed in", () => {
     useAuth.setState({ status: "authed", token: "tok", email: "a@b.co" });
     render(<AuthForm mode="login" />);
-    expect(mockReplace).toHaveBeenCalledWith("/");
+    expect(mockReplace).toHaveBeenCalledWith("/app/shorten");
   });
 });
 

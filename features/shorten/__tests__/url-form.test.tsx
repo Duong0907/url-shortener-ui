@@ -36,7 +36,7 @@ describe("UrlForm", () => {
   it("locks the input and button while loading", () => {
     setup({ loading: true });
     expect(input()).toHaveAttribute("readonly");
-    expect(button("Shortening…")).toBeDisabled();
+    expect(button("Shortening...")).toBeDisabled();
   });
 
   it("shows the error as an alert", () => {

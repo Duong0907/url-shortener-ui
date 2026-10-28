@@ -7,7 +7,7 @@ describe("Button", () => {
     render(<Button>Go</Button>);
     const btn = screen.getByRole("button", { name: "Go" });
     expect(btn).toHaveAttribute("data-slot", "button");
-    expect(btn).toHaveClass("bg-primary", "h-8");
+    expect(btn).toHaveClass("bg-foreground", "h-11", "uppercase");
   });
 
   it("applies variant, size and custom class", () => {
@@ -16,7 +16,7 @@ describe("Button", () => {
         Del
       </Button>,
     );
-    expect(screen.getByRole("button")).toHaveClass("text-destructive", "h-9", "extra");
+    expect(screen.getByRole("button")).toHaveClass("text-destructive", "h-12", "extra");
   });
 
   it("is disabled when disabled prop is set", () => {
@@ -24,7 +24,11 @@ describe("Button", () => {
     expect(screen.getByRole("button")).toBeDisabled();
   });
 
-  it("buttonVariants returns class string", () => {
-    expect(buttonVariants({ variant: "link" })).toContain("underline-offset-4");
+  it("link variant drops the control height and padding", () => {
+    const cls = buttonVariants({ variant: "link" });
+    expect(cls).toContain("underline-offset-4");
+    expect(cls).toContain("h-auto");
+    expect(cls).not.toContain("h-11");
+    expect(cls).not.toContain("px-6");
   });
 });

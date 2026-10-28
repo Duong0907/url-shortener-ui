@@ -1,6 +1,6 @@
 import { render, screen } from "@testing-library/react";
 
-import VerifyEmailPage, { metadata } from "@/app/verify-email/page";
+import VerifyEmailPage, { metadata } from "@/app/(public)/verify-email/page";
 import { useAuth } from "@/features/auth/store";
 
 jest.mock("next/navigation", () => ({ useRouter: () => ({ replace: jest.fn() }) }));

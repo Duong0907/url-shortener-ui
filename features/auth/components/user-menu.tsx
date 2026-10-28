@@ -4,7 +4,6 @@ import { useEffect } from "react";
 import Link from "next/link";
 
 import { Button, buttonVariants } from "@/components/ui/button";
-import { Typography } from "@/components/ui/typography";
 import { logout, refreshSession, useAuth } from "@/features/auth/store";
 
 export function UserMenu() {
@@ -21,23 +20,29 @@ export function UserMenu() {
 
   if (status === "anon") {
     return (
-      <nav className="flex items-center gap-2">
-        <Link href="/login" className={buttonVariants({ variant: "ghost" })}>
+      <div className="flex items-center gap-2">
+        {/* Hidden on phones so the nav fits at 375px; the sign-up page links to log in. */}
+        <Link
+          href="/login"
+          className={buttonVariants({
+            variant: "ghost",
+            size: "sm",
+            className: "hidden sm:inline-flex",
+          })}
+        >
           Log in
         </Link>
-        <Link href="/register" className={buttonVariants()}>
+        <Link href="/register" className={buttonVariants({ size: "sm" })}>
           Sign up
         </Link>
-      </nav>
+      </div>
     );
   }
 
   return (
     <div className="flex items-center gap-3">
-      <Typography as="span" variant="small" className="text-muted-foreground">
-        {email}
-      </Typography>
-      <Button variant="outline" onClick={logout}>
+      <span className="hidden text-sm text-muted-foreground sm:inline">{email}</span>
+      <Button variant="outline" size="sm" onClick={logout}>
         Log out
       </Button>
     </div>
