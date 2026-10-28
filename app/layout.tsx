@@ -1,17 +1,13 @@
 import type { Metadata } from "next";
-import { Bricolage_Grotesque, Instrument_Sans, JetBrains_Mono } from "next/font/google";
-import Link from "next/link";
-
-import { UserMenu } from "@/features/auth/components/user-menu";
+import { Geist, Source_Serif_4 } from "next/font/google";
+import { cn } from "cn";
+import { ThemeProvider } from "next-themes";
 
 import "./globals.css";
 
-const display = Bricolage_Grotesque({
-  variable: "--font-display",
-  subsets: ["latin"],
-});
-const sans = Instrument_Sans({ variable: "--font-body", subsets: ["latin"] });
-const mono = JetBrains_Mono({ variable: "--font-code", subsets: ["latin"] });
+const geist = Geist({ variable: "--font-geist", subsets: ["latin"] });
+// The variable makes the font-serif utility (link buttons) resolve to Source Serif 4 too.
+const sourceSerif4 = Source_Serif_4({ variable: "--font-source-serif", subsets: ["latin"] });
 
 export const metadata: Metadata = {
   title: "URL Shortener",
@@ -22,16 +18,22 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
   return (
     <html
       lang="en"
-      className={`${display.variable} ${sans.variable} ${mono.variable} h-full antialiased`}
+      className={cn(
+        "font-sans antialiased scrollbar-gutter-stable",
+        geist.variable,
+        sourceSerif4.variable,
+      )}
+      suppressHydrationWarning
     >
-      <body className="min-h-full flex flex-col">
-        <header className="flex items-center justify-between px-4 py-3 sm:px-6">
-          <Link href="/" className="font-heading text-lg font-bold">
-            Shortener
-          </Link>
-          <UserMenu />
-        </header>
-        {children}
+      <body className={sourceSerif4.className}>
+        <ThemeProvider
+          attribute="class"
+          defaultTheme="system"
+          enableSystem
+          disableTransitionOnChange
+        >
+          {children}
+        </ThemeProvider>
       </body>
     </html>
   );

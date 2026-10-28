@@ -1,3 +1,4 @@
+import { useAuth } from "@/features/auth/store";
 import { createLink } from "@/features/shorten/api";
 
 const link = {
@@ -20,6 +21,7 @@ const fetchMock = jest.fn();
 beforeEach(() => {
   fetchMock.mockReset();
   global.fetch = fetchMock as unknown as typeof fetch;
+  useAuth.setState({ status: "anon", token: null, email: null });
 });
 
 describe("createLink", () => {
@@ -32,6 +34,13 @@ describe("createLink", () => {
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ targetUrl: "https://example.com" }),
     });
+  });
+
+  it("sends the token when signed in", async () => {
+    useAuth.setState({ status: "authed", token: "tok", email: "a@b.co" });
+    fetchMock.mockResolvedValue(reply(201, link));
+    await createLink("https://example.com");
+    expect(fetchMock.mock.calls[0][1].headers.Authorization).toBe("Bearer tok");
   });
 
   it("maps 400 to the invalid URL message", async () => {

@@ -5,24 +5,23 @@ import { cn } from "cn";
 const typographyVariants = cva("", {
   variants: {
     variant: {
-      h1: "font-heading text-4xl leading-none font-bold tracking-tight text-balance sm:text-6xl",
-      h2: "font-heading text-3xl leading-tight font-bold tracking-tight text-balance",
-      h3: "font-heading text-2xl leading-snug font-semibold text-balance",
-      h4: "font-heading text-xl leading-snug font-semibold",
-      p: "text-base leading-relaxed",
-      small: "text-sm",
-      overline: "text-[11px] tracking-widest text-muted-foreground uppercase",
-      code: "font-mono text-2xl break-all sm:text-3xl",
+      h1: "text-4xl",
+      h2: "text-3xl",
+      h3: "text-2xl",
+      h4: "text-xl",
+      h5: "text-lg",
+      h6: "text-base",
+      body: "",
     },
     weight: {
-      normal: "font-normal",
+      light: "font-light",
+      regular: "font-normal",
       medium: "font-medium",
-      semibold: "font-semibold",
       bold: "font-bold",
-      extrabold: "font-extrabold",
+      black: "font-black",
     },
   },
-  defaultVariants: { variant: "p" },
+  defaultVariants: { variant: "body", weight: "regular" },
 });
 
 const defaultTag = {
@@ -30,19 +29,18 @@ const defaultTag = {
   h2: "h2",
   h3: "h3",
   h4: "h4",
-  p: "p",
-  small: "small",
-  overline: "p",
-  code: "code",
+  h5: "h5",
+  h6: "h6",
+  body: "p",
 } as const;
 
 type TypographyProps = React.HTMLAttributes<HTMLElement> &
   VariantProps<typeof typographyVariants> & {
-    as?: "h1" | "h2" | "h3" | "h4" | "p" | "span" | "small" | "code" | "dt" | "dd";
+    as?: "h1" | "h2" | "h3" | "h4" | "h5" | "h6" | "p" | "span" | "dt" | "dd";
   };
 
 function Typography({ variant, weight, as, className, ...props }: TypographyProps) {
-  const Tag = as ?? defaultTag[variant ?? "p"];
+  const Tag = as ?? defaultTag[variant ?? "body"];
   return (
     <Tag
       data-slot="typography"
@@ -52,4 +50,4 @@ function Typography({ variant, weight, as, className, ...props }: TypographyProp
   );
 }
 
-export { Typography, typographyVariants };
+export { Typography };

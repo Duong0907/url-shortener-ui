@@ -1,6 +1,7 @@
 "use client";
 
 import { useRef, useState } from "react";
+import { LoaderIcon } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -37,8 +38,8 @@ export function UrlForm({ loading, error, onSubmit }: Props) {
   const message = error ?? pasteError;
 
   return (
-    <div className="space-y-2">
-      <form onSubmit={submit} className="flex flex-col gap-2 sm:flex-row">
+    <div className="flex flex-col gap-2">
+      <form onSubmit={submit} className="flex gap-3">
         <div className="relative flex-1">
           <Input
             ref={inputRef}
@@ -46,7 +47,7 @@ export function UrlForm({ loading, error, onSubmit }: Props) {
             type="text"
             autoFocus
             placeholder="https://example.com/very/long/link"
-            className="h-13 bg-card pr-20 font-mono"
+            className="pr-20"
             value={url}
             onChange={(e) => {
               setUrl(e.target.value);
@@ -58,7 +59,7 @@ export function UrlForm({ loading, error, onSubmit }: Props) {
           <Button
             type="button"
             variant="ghost"
-            size="sm"
+            size="xs"
             className="absolute inset-y-0 right-2 my-auto"
             disabled={loading}
             onClick={paste}
@@ -66,12 +67,13 @@ export function UrlForm({ loading, error, onSubmit }: Props) {
             Paste
           </Button>
         </div>
-        <Button type="submit" className="h-13 min-w-32 px-6" disabled={loading || !url.trim()}>
-          {loading ? "Shortening…" : "Shorten"}
+        <Button type="submit" disabled={loading || !url.trim()}>
+          {loading && <LoaderIcon aria-hidden className="size-4 animate-spin" />}
+          {loading ? "Shortening..." : "Shorten"}
         </Button>
       </form>
       {message && (
-        <Typography as="p" variant="small" role="alert" className="text-destructive">
+        <Typography role="alert" className="text-sm text-destructive">
           {message}
         </Typography>
       )}

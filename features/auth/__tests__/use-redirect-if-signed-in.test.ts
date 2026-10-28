@@ -9,11 +9,11 @@ jest.mock("next/navigation", () => ({ useRouter: () => ({ replace: mockReplace }
 beforeEach(() => mockReplace.mockReset());
 
 describe("useRedirectIfSignedIn", () => {
-  it("sends signed-in users home", () => {
+  it("sends signed-in users to the app", () => {
     useAuth.setState({ status: "authed", token: "tok", email: "a@b.co" });
     const { result } = renderHook(() => useRedirectIfSignedIn());
     expect(result.current).toBe("authed");
-    expect(mockReplace).toHaveBeenCalledWith("/");
+    expect(mockReplace).toHaveBeenCalledWith("/app/shorten");
   });
 
   it.each(["loading", "anon"] as const)("stays when the status is %s", (status) => {

@@ -4,10 +4,10 @@ import { useEffect, useState } from "react";
 import Link from "next/link";
 
 import { Button, buttonVariants } from "@/components/ui/button";
-import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Typography } from "@/components/ui/typography";
 import { verifyEmail } from "@/features/auth/api";
+import { AuthShell } from "@/features/auth/components/auth-shell";
 import { ResendButton } from "@/features/auth/components/resend-button";
 import { useRedirectIfSignedIn } from "@/features/auth/use-redirect-if-signed-in";
 
@@ -67,55 +67,60 @@ export function VerifyEmail({ token }: { token: string | null }) {
   }
 
   return (
-    <Card className="w-full max-w-sm">
-      <CardHeader>
-        <Typography as="h1" variant="h3">
-          Verify email
-        </Typography>
-      </CardHeader>
-      <CardContent className="space-y-4">
-        {state === "verifying" && <Typography role="status">Verifying your email…</Typography>}
-        {state === "verified" && (
-          <>
-            <Typography role="status">Email verified</Typography>
-            <Link href="/login" className={buttonVariants({ className: "h-11 w-full" })}>
-              Log in
-            </Link>
-          </>
-        )}
-        {state === "invalid" && (
-          <>
+    <AuthShell
+      title="Verify email"
+      aside={
+        <>
+          {state === "verifying" && (
+            <Typography role="status" className="text-muted-foreground">
+              Verifying your email…
+            </Typography>
+          )}
+          {state === "verified" && (
+            <Typography role="status" className="text-muted-foreground">
+              Email verified
+            </Typography>
+          )}
+          {state === "invalid" && (
             <Typography role="alert" className="text-destructive">
               This link is invalid or has expired.
             </Typography>
-            <div className="space-y-1.5">
-              <label htmlFor="resend-email" className="text-sm font-medium">
-                Email
-              </label>
-              <Input
-                id="resend-email"
-                type="email"
-                autoComplete="email"
-                className="h-11"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-              />
-            </div>
-
-            <ResendButton key={email} email={email} />
-          </>
-        )}
-        {state === "error" && (
-          <>
+          )}
+          {state === "error" && (
             <Typography role="alert" className="text-destructive">
               {error}
             </Typography>
-            <Button type="button" className="h-11 w-full" onClick={retry}>
-              Try again
-            </Button>
-          </>
-        )}
-      </CardContent>
-    </Card>
+          )}
+        </>
+      }
+    >
+      {state === "verified" && (
+        <Link href="/login" className={buttonVariants({ size: "lg", className: "w-full" })}>
+          Log in
+        </Link>
+      )}
+      {state === "invalid" && (
+        <>
+          <div className="flex flex-col gap-1.5">
+            <label htmlFor="resend-email" className="text-sm leading-none font-medium">
+              Email
+            </label>
+            <Input
+              id="resend-email"
+              type="email"
+              autoComplete="email"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+            />
+          </div>
+          <ResendButton key={email} email={email} />
+        </>
+      )}
+      {state === "error" && (
+        <Button type="button" size="lg" className="w-full" onClick={retry}>
+          Try again
+        </Button>
+      )}
+    </AuthShell>
   );
 }

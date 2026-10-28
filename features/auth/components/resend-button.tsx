@@ -24,11 +24,11 @@ export function ResendButton({ email }: { email: string }) {
   }
 
   return (
-    <div className="space-y-2">
+    <div className="flex flex-col gap-2">
       <Button
         type="button"
         variant="outline"
-        className="h-11 w-full"
+        className="w-full"
         disabled={state !== "idle" || !email.trim()}
         onClick={send}
       >
@@ -36,12 +36,12 @@ export function ResendButton({ email }: { email: string }) {
       </Button>
       {state === "sent" && (
         // Each resend kills the previous link, so point users at the newest mail.
-        <Typography as="p" variant="small" role="status" className="text-muted-foreground">
+        <Typography role="status" className="text-sm text-muted-foreground">
           Sent. Check your inbox. Use the link in the newest email.
         </Typography>
       )}
       {error && (
-        <Typography as="p" variant="small" role="alert" className="text-destructive">
+        <Typography role="alert" className="text-sm text-destructive">
           {error}
         </Typography>
       )}

@@ -94,7 +94,7 @@ describe("VerifyEmail", () => {
   it("sends signed-in users home without using the token", () => {
     useAuth.setState({ status: "authed", token: "tok", email: "a@b.co" });
     render(<VerifyEmail token={newToken()} />);
-    expect(mockReplace).toHaveBeenCalledWith("/");
+    expect(mockReplace).toHaveBeenCalledWith("/app/shorten");
     expect(fetchMock).not.toHaveBeenCalled();
   });
 });

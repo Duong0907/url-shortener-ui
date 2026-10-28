@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 
-import { Typography } from "@/components/ui/typography";
+import { SectionHeader } from "@/components/ui/section-header";
 import { createLink, type LinkResponse } from "@/features/shorten/api";
 import { LinkTag } from "@/features/shorten/link-tag";
 import { UrlForm } from "@/features/shorten/url-form";
@@ -29,27 +29,13 @@ export function ShortenForm() {
   }
 
   return (
-    <div className="w-full max-w-5xl space-y-10">
-      <div className="grid items-center gap-10 md:grid-cols-[1.1fr_1fr]">
-        <Hero />
-        <LinkTag key={shortenCount} link={link} />
-      </div>
+    <div className="flex flex-col gap-7">
+      <SectionHeader
+        title="Long links in. Tidy links out."
+        description="Paste any URL. Get a short link you can copy, share and track."
+      />
       <UrlForm loading={loading} error={error} onSubmit={shorten} />
-    </div>
-  );
-}
-
-function Hero() {
-  return (
-    <div className="space-y-4">
-      <Typography variant="h1" weight="extrabold">
-        Long links in.
-        <br />
-        <span className="text-primary">Tidy tags</span> out.
-      </Typography>
-      <Typography className="max-w-[42ch] text-muted-foreground">
-        Paste any URL. Get a short link you can copy, share and track until it expires.
-      </Typography>
+      <LinkTag key={shortenCount} link={link} />
     </div>
   );
 }
