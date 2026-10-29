@@ -5,8 +5,6 @@ import { listLinks } from "@/features/links/api";
 import { MyLinks } from "@/features/links/my-links";
 import { renderWithQuery } from "@/test-utils/render-with-query";
 
-let mockParams = new URLSearchParams();
-jest.mock("next/navigation", () => ({ useSearchParams: () => mockParams }));
 jest.mock("@/features/links/api", () => ({ listLinks: jest.fn() }));
 
 const listMock = listLinks as jest.Mock;
@@ -18,48 +16,52 @@ const link = (slug: string, active = true) => ({
   active,
   createdAt: "2026-10-10T12:00:00Z",
 });
-const pageOf = (content: unknown[], number: number, totalPages: number, totalElements = 25) => ({
-  content,
-  page: { size: 20, number, totalElements, totalPages },
-});
+const listOf = (items: unknown[], nextCursor: string | null = null) => ({ items, nextCursor });
 
-beforeEach(() => {
-  listMock.mockReset();
-  mockParams = new URLSearchParams();
-});
+beforeEach(() => listMock.mockReset());
 
 describe("MyLinks", () => {
   it("shows loading, then the rows", async () => {
-    listMock.mockResolvedValue(pageOf([link("abc"), link("off", false)], 0, 1, 2));
+    listMock.mockResolvedValue(listOf([link("abc"), link("off", false)]));
     renderWithQuery(<MyLinks />);
     expect(screen.getByText("Loading…")).toBeInTheDocument();
     expect(await screen.findByText("abc")).toBeInTheDocument();
-    expect(screen.getByText("https://example.com/abc")).toHaveAttribute(
-      "title",
-      "https://example.com/abc",
-    );
-    expect(screen.getByText("Active")).toBeInTheDocument();
-    expect(screen.getByText("Inactive")).toBeInTheDocument();
-    expect(screen.getAllByText("Oct 10, 2026")).toHaveLength(2);
+    expect(screen.getByTitle("https://example.com/abc")).toHaveTextContent("example.com/abc");
+    expect(screen.getAllByText("Inactive")).toHaveLength(1);
+    expect(screen.getAllByRole("heading", { name: "Oct 10, 2026" })).toHaveLength(1);
     expect(screen.getAllByRole("button", { name: "Copy" })).toHaveLength(2);
-    expect(screen.queryByText(/Page 1 of/)).not.toBeInTheDocument();
-    expect(listMock).toHaveBeenCalledWith(0);
+    expect(screen.queryByRole("button", { name: "Load more" })).not.toBeInTheDocument();
+    expect(listMock).toHaveBeenCalledWith(undefined);
   });
 
-  it.each([
-    ["3", 2],
-    ["abc", 0],
-    ["0", 0],
-  ])("reads ?page=%s as API page %i", async (raw, apiPage) => {
-    mockParams = new URLSearchParams({ page: raw });
-    listMock.mockResolvedValue(pageOf([link("abc")], apiPage, 5));
+  it("loads more links after the cursor", async () => {
+    const user = userEvent.setup();
+    listMock
+      .mockResolvedValueOnce(listOf([link("abc")], "c1"))
+      .mockResolvedValueOnce(listOf([link("def")]));
     renderWithQuery(<MyLinks />);
-    await screen.findByText("abc");
-    expect(listMock).toHaveBeenCalledWith(apiPage);
+    await user.click(await screen.findByRole("button", { name: "Load more" }));
+    expect(await screen.findByText("def")).toBeInTheDocument();
+    expect(screen.getByText("abc")).toBeInTheDocument();
+    expect(listMock).toHaveBeenLastCalledWith("c1");
+    expect(screen.queryByRole("button", { name: "Load more" })).not.toBeInTheDocument();
+    expect(screen.getByText("That’s every link.")).toBeInTheDocument();
+  });
+
+  it("keeps the rows when loading more fails", async () => {
+    const user = userEvent.setup();
+    listMock
+      .mockResolvedValueOnce(listOf([link("abc")], "c1"))
+      .mockRejectedValueOnce(new Error("Can't reach server"));
+    renderWithQuery(<MyLinks />);
+    await user.click(await screen.findByRole("button", { name: "Load more" }));
+    expect(await screen.findByRole("alert")).toHaveTextContent("Can't reach server");
+    expect(screen.getByText("abc")).toBeInTheDocument();
+    expect(screen.getByRole("button", { name: "Load more" })).toBeEnabled();
   });
 
   it("shows the empty state", async () => {
-    listMock.mockResolvedValue(pageOf([], 0, 0, 0));
+    listMock.mockResolvedValue(listOf([]));
     renderWithQuery(<MyLinks />);
     expect(await screen.findByText("No links yet.")).toBeInTheDocument();
     expect(screen.getByRole("link", { name: "Shorten one" })).toHaveAttribute(
@@ -68,51 +70,14 @@ describe("MyLinks", () => {
     );
   });
 
-  it("shows a page past the end", async () => {
-    mockParams = new URLSearchParams({ page: "9" });
-    listMock.mockResolvedValue(pageOf([], 8, 2));
-    renderWithQuery(<MyLinks />);
-    expect(await screen.findByText("No links on this page.")).toBeInTheDocument();
-    expect(screen.getByRole("link", { name: "Go to page 1" })).toHaveAttribute(
-      "href",
-      "/app/links",
-    );
-  });
-
   it("shows the error and retries", async () => {
     const user = userEvent.setup();
     listMock
       .mockRejectedValueOnce(new Error("Can't reach server"))
-      .mockResolvedValueOnce(pageOf([link("abc")], 0, 1, 1));
+      .mockResolvedValueOnce(listOf([link("abc")]));
     renderWithQuery(<MyLinks />);
     expect(await screen.findByRole("alert")).toHaveTextContent("Can't reach server");
     await user.click(screen.getByRole("button", { name: "Try again" }));
     expect(await screen.findByText("abc")).toBeInTheDocument();
-  });
-
-  it("links to the pages around the current one", async () => {
-    mockParams = new URLSearchParams({ page: "2" });
-    listMock.mockResolvedValue(pageOf([link("abc")], 1, 3));
-    renderWithQuery(<MyLinks />);
-    expect(await screen.findByText("Page 2 of 3")).toBeInTheDocument();
-    expect(screen.getByRole("link", { name: "‹ Prev" })).toHaveAttribute(
-      "href",
-      "/app/links?page=1",
-    );
-    expect(screen.getByRole("link", { name: "Next ›" })).toHaveAttribute(
-      "href",
-      "/app/links?page=3",
-    );
-  });
-
-  it.each([
-    ["1", "‹ Prev"],
-    ["3", "Next ›"],
-  ])("disables the step past the end on page %s", async (raw, name) => {
-    mockParams = new URLSearchParams({ page: raw });
-    listMock.mockResolvedValue(pageOf([link("abc")], Number(raw) - 1, 3));
-    renderWithQuery(<MyLinks />);
-    await screen.findByText("abc");
-    expect(screen.getByRole("button", { name })).toBeDisabled();
   });
 });

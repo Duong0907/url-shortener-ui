@@ -2,7 +2,6 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { useQuery } from "@tanstack/react-query";
 import { cn } from "cn";
 import { Link2, List, LogOut, Settings } from "lucide-react";
 
@@ -10,7 +9,6 @@ import { fieldLabel } from "@/components/form/text-field";
 import { ThemeSwitch } from "@/components/theme-switch";
 import { Button } from "@/components/ui/button";
 import { logout, useAuth } from "@/features/auth/store";
-import { listLinks } from "@/features/links/api";
 
 const ITEMS = [
   { href: "/app/shorten", label: "Shorten", Icon: Link2 },
@@ -34,11 +32,6 @@ export function SidebarNav({
   const pathname = usePathname();
   const active = ITEMS.findIndex(({ href }) => pathname.startsWith(href));
   const email = useAuth((s) => s.email);
-  const authed = useAuth((s) => s.status === "authed");
-  // Same key as the first page of My links, so the count shares its cache and refetches
-  // when a new link invalidates ["links"].
-  const total = useQuery({ queryKey: ["links", 0], queryFn: () => listLinks(0), enabled: authed })
-    .data?.page.totalElements;
 
   return (
     <div className="flex h-full flex-col">
@@ -91,11 +84,6 @@ export function SidebarNav({
               )}
             >
               {label}
-              {href === "/app/links" && total !== undefined && (
-                <span className="font-mono text-xs font-normal text-muted-foreground tabular-nums">
-                  {total}
-                </span>
-              )}
             </span>
           </Link>
         ))}

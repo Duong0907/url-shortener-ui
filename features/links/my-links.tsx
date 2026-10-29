@@ -1,112 +1,140 @@
 "use client";
 
-import { useSearchParams } from "next/navigation";
-import { keepPreviousData, useQuery } from "@tanstack/react-query";
+import { useInfiniteQuery } from "@tanstack/react-query";
 import { cn } from "cn";
 
 import { CopyButton } from "@/components/copy-button";
 import { EmptyState } from "@/components/empty-state";
-import { Pager } from "@/components/pager";
+import { fieldLabel } from "@/components/form/text-field";
 import { Button } from "@/components/ui/button";
 import { SectionHeader } from "@/components/ui/section-header";
 import { listLinks } from "@/features/links/api";
+import { byDay, dayLabel, fmtDate, splitTarget } from "@/features/links/services";
 import type { LinkResponse } from "@/features/shorten/api";
-
-const fmtDate = (iso: string) =>
-  new Date(iso).toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric" });
 
 const focusRing = "outline-none focus-visible:ring-2 focus-visible:ring-highlight";
 
-// URL pages count from 1. Anything else falls back to page 1.
-function pageFrom(raw: string | null) {
-  const n = Number(raw);
-  return Number.isInteger(n) && n >= 1 ? n : 1;
-}
-
 export function MyLinks() {
-  const page = pageFrom(useSearchParams().get("page"));
-  const query = useQuery({
-    queryKey: ["links", page],
-    queryFn: () => listLinks(page - 1),
-    placeholderData: keepPreviousData,
+  const {
+    data,
+    error,
+    isPending,
+    isError,
+    refetch,
+    hasNextPage,
+    fetchNextPage,
+    isFetchingNextPage,
+    isFetchNextPageError,
+  } = useInfiniteQuery({
+    queryKey: ["links"],
+    queryFn: ({ pageParam }) => listLinks(pageParam),
+    initialPageParam: undefined as string | undefined,
+    getNextPageParam: (last) => last.nextCursor ?? undefined,
   });
+  const links = data?.pages.flatMap((p) => p.items) ?? [];
 
   return (
     <div className="flex flex-col">
       <SectionHeader title="My links" description="Every link you shortened, newest first." />
-      {query.isPending ? (
+      {isPending ? (
         <p className="text-sm text-muted-foreground">Loading…</p>
-      ) : query.isError ? (
+      ) : isError && !isFetchNextPageError ? (
         <div className="flex flex-col items-start gap-3">
           <p role="alert" className="text-sm text-destructive">
-            {query.error.message}
+            {error.message}
           </p>
-          <Button variant="outline" size="sm" onClick={() => query.refetch()}>
+          <Button variant="outline" size="sm" onClick={() => refetch()}>
             Try again
           </Button>
         </div>
-      ) : query.data.page.totalElements === 0 ? (
+      ) : links.length === 0 ? (
         <EmptyState text="No links yet." href="/app/shorten" action="Shorten one" />
-      ) : query.data.content.length === 0 ? (
-        <EmptyState text="No links on this page." href="/app/links" action="Go to page 1" />
       ) : (
-        <>
-          <ul
-            className={cn(
-              "divide-y divide-border border-y border-border transition-opacity motion-reduce:transition-none",
-              query.isPlaceholderData && "opacity-60",
-            )}
-          >
-            {query.data.content.map((link) => (
-              <LinkRow key={link.id} link={link} />
-            ))}
-          </ul>
-          {query.data.page.totalPages > 1 && (
-            <Pager
-              page={page}
-              totalPages={query.data.page.totalPages}
-              hrefFor={(to) => `/app/links?page=${to}`}
-              busy={query.isPlaceholderData}
-            />
+        <div className="flex max-w-2xl flex-col gap-8">
+          {byDay(links).map((group) => (
+            <section key={group.day}>
+              <h2 className={cn(fieldLabel, "border-b border-border pb-2")}>
+                {dayLabel(group.day)}
+              </h2>
+              <ul className="divide-y divide-border">
+                {group.links.map((link) => (
+                  <LinkRow key={link.id} link={link} />
+                ))}
+              </ul>
+            </section>
+          ))}
+
+          {hasNextPage ? (
+            <div className="flex flex-col items-center gap-3">
+              {isFetchNextPageError && (
+                <p role="alert" className="text-sm text-destructive">
+                  {error.message}
+                </p>
+              )}
+              <Button
+                variant="outline"
+                onClick={() => fetchNextPage()}
+                disabled={isFetchingNextPage}
+              >
+                {isFetchingNextPage ? "Loading…" : "Load more"}
+              </Button>
+            </div>
+          ) : (
+            data.pages.length > 1 && (
+              <p className="text-center text-sm text-muted-foreground">That&rsquo;s every link.</p>
+            )
           )}
-        </>
+        </div>
       )}
     </div>
   );
 }
 
 function LinkRow({ link }: { link: LinkResponse }) {
+  const [host, rest] = splitTarget(link.targetUrl);
+
   return (
-    <li className="flex items-center gap-3 py-3.5">
-      <span
-        aria-hidden
-        className={cn(
-          "size-2 shrink-0 rounded-full",
-          link.active ? "bg-success" : "bg-muted-foreground/40",
-        )}
-      />
-      <span className="sr-only">{link.active ? "Active" : "Inactive"}</span>
+    <li className="group flex items-center gap-3 py-3">
       <div className="min-w-0 flex-1">
         <a
           href={link.shortUrl}
           target="_blank"
           rel="noreferrer"
-          className={cn("rounded-sm break-all transition-colors hover:text-highlight", focusRing)}
+          title={link.shortUrl}
+          className={cn(
+            "rounded-sm font-mono text-lg font-bold break-all transition-colors hover:text-highlight",
+            focusRing,
+          )}
         >
-          <span className="text-muted-foreground">{link.shortUrl.slice(0, -link.slug.length)}</span>
-          {link.slug}
+          <span className="font-normal text-muted-foreground">/</span>
+          <span>{link.slug}</span>
         </a>
         <span title={link.targetUrl} className="block truncate text-sm text-muted-foreground">
-          {link.targetUrl}
+          <span className="text-foreground/85">{host}</span>
+          {rest}
         </span>
       </div>
-      <time
-        dateTime={link.createdAt}
-        className="hidden text-sm whitespace-nowrap text-muted-foreground tabular-nums sm:block"
-      >
-        {fmtDate(link.createdAt)}
-      </time>
-      <CopyButton text={link.shortUrl} variant="ghost" size="xs" />
+      {!link.active ? (
+        <span className="shrink-0 rounded-full bg-secondary px-2 py-0.5 text-[0.7rem] font-semibold tracking-[0.14em] text-muted-foreground uppercase">
+          Inactive
+        </span>
+      ) : (
+        link.expiresAt && (
+          <time
+            dateTime={link.expiresAt}
+            className="shrink-0 font-mono text-sm whitespace-nowrap text-muted-foreground tabular-nums"
+          >
+            Expires {fmtDate(link.expiresAt)}
+          </time>
+        )
+      )}
+      <CopyButton
+        text={link.shortUrl}
+        icon
+        variant="ghost"
+        size="icon-sm"
+        className="shrink-0 text-muted-foreground transition-opacity group-focus-within:opacity-100 group-hover:opacity-100 hover:text-foreground motion-reduce:transition-none sm:opacity-0 [@media(hover:none)]:opacity-100"
+      />
     </li>
   );
 }
