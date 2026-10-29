@@ -36,7 +36,9 @@ const defaultTag = {
 
 type TypographyProps = React.HTMLAttributes<HTMLElement> &
   VariantProps<typeof typographyVariants> & {
-    as?: "h1" | "h2" | "h3" | "h4" | "h5" | "h6" | "p" | "span" | "dt" | "dd";
+    as?: "h1" | "h2" | "h3" | "h4" | "h5" | "h6" | "p" | "span" | "label" | "dt" | "dd";
+    // Only used with as="label".
+    htmlFor?: string;
   };
 
 function Typography({ variant, weight, as, className, ...props }: TypographyProps) {

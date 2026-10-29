@@ -1,7 +1,8 @@
-import { render, screen } from "@testing-library/react";
+import { screen } from "@testing-library/react";
 
 import Home from "@/app/(public)/page";
 import { useAuth } from "@/features/auth/store";
+import { renderWithQuery } from "@/test-utils/render-with-query";
 
 const mockReplace = jest.fn();
 jest.mock("next/navigation", () => ({ useRouter: () => ({ replace: mockReplace }) }));
@@ -13,7 +14,7 @@ beforeEach(() => {
 
 describe("Home page", () => {
   it("renders headline and the form", () => {
-    render(<Home />);
+    renderWithQuery(<Home />);
     expect(screen.getByRole("heading", { level: 1 })).toHaveTextContent(
       "Long links in. Tidy links out.",
     );
@@ -23,7 +24,7 @@ describe("Home page", () => {
 
   it("sends signed-in users to the app", () => {
     useAuth.setState({ status: "authed", token: "tok", email: "a@b.co" });
-    render(<Home />);
+    renderWithQuery(<Home />);
     expect(mockReplace).toHaveBeenCalledWith("/app/shorten");
   });
 });

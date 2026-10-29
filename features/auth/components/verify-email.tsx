@@ -4,11 +4,10 @@ import { useEffect, useState } from "react";
 import Link from "next/link";
 
 import { Button, buttonVariants } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
 import { Typography } from "@/components/ui/typography";
 import { verifyEmail } from "@/features/auth/api";
 import { AuthShell } from "@/features/auth/components/auth-shell";
-import { ResendButton } from "@/features/auth/components/resend-button";
+import { ResendForm } from "@/features/auth/components/resend-form";
 import { useRedirectIfSignedIn } from "@/features/auth/use-redirect-if-signed-in";
 
 // One POST per token per page load. Strict Mode runs effects twice, and a second
@@ -35,7 +34,6 @@ export function VerifyEmail({ token }: { token: string | null }) {
   const [state, setState] = useState<State>(token ? "verifying" : "invalid");
   const [error, setError] = useState<string | null>(null);
   const [attempt, setAttempt] = useState(0);
-  const [email, setEmail] = useState("");
 
   // Wait for the session check:
   // a signed-in user is redirected and the token stays unused.
@@ -99,23 +97,7 @@ export function VerifyEmail({ token }: { token: string | null }) {
           Log in
         </Link>
       )}
-      {state === "invalid" && (
-        <>
-          <div className="flex flex-col gap-1.5">
-            <label htmlFor="resend-email" className="text-sm leading-none font-medium">
-              Email
-            </label>
-            <Input
-              id="resend-email"
-              type="email"
-              autoComplete="email"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-            />
-          </div>
-          <ResendButton key={email} email={email} />
-        </>
-      )}
+      {state === "invalid" && <ResendForm />}
       {state === "error" && (
         <Button type="button" size="lg" className="w-full" onClick={retry}>
           Try again

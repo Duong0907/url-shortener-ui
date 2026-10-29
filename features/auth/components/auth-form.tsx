@@ -2,13 +2,22 @@
 
 import { useState } from "react";
 import Link from "next/link";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { useMutation } from "@tanstack/react-query";
+import { useForm, useWatch } from "react-hook-form";
+import type { z } from "zod";
 
-import { Button, buttonVariants } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
+import { Form } from "@/components/form/form";
+import { FormError } from "@/components/form/form-error";
+import { PasswordField } from "@/components/form/password-field";
+import { SubmitButton } from "@/components/form/submit-button";
+import { TextField } from "@/components/form/text-field";
+import { buttonVariants } from "@/components/ui/button";
 import { Typography } from "@/components/ui/typography";
 import { EmailNotVerifiedError, EmailTakenError, register } from "@/features/auth/api";
 import { AuthShell } from "@/features/auth/components/auth-shell";
 import { ResendButton } from "@/features/auth/components/resend-button";
+import { loginSchema, registerSchema, type AuthValues } from "@/features/auth/schemas";
 import { login } from "@/features/auth/store";
 import { useRedirectIfSignedIn } from "@/features/auth/use-redirect-if-signed-in";
 
@@ -36,60 +45,32 @@ const textsByMode = {
 } as const;
 
 const linkClass = buttonVariants({ variant: "link" });
-const labelClass = "text-sm leading-none font-medium";
 
 export function AuthForm({ mode }: { mode: "login" | "register" }) {
-  useRedirectIfSignedIn();
-
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
-  const [confirm, setConfirm] = useState("");
+  const status = useRedirectIfSignedIn();
   const [showPassword, setShowPassword] = useState(false);
-  const [error, setError] = useState<Error | null>(null);
-  const [loading, setLoading] = useState(false);
-  const [sentTo, setSentTo] = useState<string | null>(null);
   const text = textsByMode[mode];
-  const passwordType = showPassword ? "text" : "password";
+  const schema: z.ZodType<AuthValues, AuthValues> = mode === "login" ? loginSchema : registerSchema;
 
-  async function submit(e: React.FormEvent) {
-    e.preventDefault();
+  const form = useForm<AuthValues>({
+    defaultValues: { email: "", password: "", confirm: "" },
+    resolver: zodResolver(schema),
+  });
+  const { control } = form;
+  const email = useWatch({ control, name: "email" });
 
-    if (mode === "register") {
-      const problem =
-        password.length < 8
-          ? "Password needs at least 8 characters"
-          : password !== confirm
-            ? "Passwords don't match"
-            : null;
-
-      if (problem) {
-        setError(new Error(problem));
-        return;
-      }
-    }
-
-    setLoading(true);
-    setError(null);
-
-    try {
-      if (mode === "login") {
-        await login(email.trim(), password);
-
-        // Stay in the loading state;
-        // useRedirectIfSignedIn navigates away.
-        return;
-      }
-
-      await register(email.trim(), password, confirm);
-
-      setSentTo(email.trim());
-    } catch (err) {
-      setError(err as Error);
-    }
-    setLoading(false);
-  }
+  const { mutateAsync, isSuccess, variables, error } = useMutation({
+    mutationFn: (value: AuthValues) =>
+      mode === "login"
+        ? login(value.email, value.password)
+        : register(value.email, value.password, value.confirm),
+  });
 
   // Register succeeded. Login stays blocked (403) until the user opens the mailed link.
+  const sentTo = mode === "register" && isSuccess ? variables.email : null;
+
+  const handleSubmit = (value: AuthValues) => mutateAsync(value).catch(() => {});
+
   if (sentTo) {
     return (
       <AuthShell
@@ -121,87 +102,40 @@ export function AuthForm({ mode }: { mode: "login" | "register" }) {
         </>
       }
     >
-      <form onSubmit={submit} className="flex flex-col gap-4">
-        <div className="flex flex-col gap-1.5">
-          <label htmlFor="email" className={labelClass}>
-            Email
-          </label>
-          <Input
-            id="email"
-            type="email"
-            autoComplete="email"
-            autoFocus
-            required
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
-            readOnly={loading}
-          />
-        </div>
-        <div className="flex flex-col gap-1.5">
-          <label htmlFor="password" className={labelClass}>
-            Password
-          </label>
-          <div className="relative">
-            <Input
-              id="password"
-              type={passwordType}
-              autoComplete={text.autoComplete}
-              maxLength={72}
-              required
-              className="pr-20"
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-              readOnly={loading}
-            />
-            <Button
-              type="button"
-              variant="ghost"
-              size="xs"
-              className="absolute inset-y-0 right-2 my-auto"
-              aria-label={showPassword ? "Hide password" : "Show password"}
-              onClick={() => setShowPassword((s) => !s)}
-            >
-              {showPassword ? "Hide" : "Show"}
-            </Button>
-          </div>
-        </div>
+      <Form form={form} onSubmit={handleSubmit}>
+        <TextField name="email" label="Email" type="email" autoComplete="email" autoFocus />
+        <PasswordField
+          name="password"
+          label="Password"
+          autoComplete={text.autoComplete}
+          maxLength={72}
+          shown={showPassword}
+          onShownChange={setShowPassword}
+        />
         {mode === "register" && (
-          <div className="flex flex-col gap-1.5">
-            <label htmlFor="confirm-password" className={labelClass}>
-              Confirm password
-            </label>
-            <Input
-              id="confirm-password"
-              type={passwordType}
-              autoComplete="new-password"
-              maxLength={72}
-              required
-              value={confirm}
-              onChange={(e) => setConfirm(e.target.value)}
-              readOnly={loading}
-            />
-          </div>
+          <PasswordField
+            name="confirm"
+            label="Confirm password"
+            autoComplete="new-password"
+            maxLength={72}
+            shown={showPassword}
+            toggle={false}
+          />
         )}
-        {error && (
-          <div className="flex flex-col gap-2">
-            <Typography role="alert" className="text-sm text-destructive">
-              {error.message}
-              {error instanceof EmailTakenError && (
-                <>
-                  &nbsp;
-                  <Link href="/login" className={linkClass}>
-                    Log in instead
-                  </Link>
-                </>
-              )}
-            </Typography>
-            {error instanceof EmailNotVerifiedError && <ResendButton key={email} email={email} />}
-          </div>
-        )}
-        <Button type="submit" size="lg" className="w-full" disabled={loading}>
-          {loading ? text.busy : text.submit}
-        </Button>
-      </form>
+
+        <FormError error={error}>
+          {error instanceof EmailTakenError && (
+            <Link href="/login" className={linkClass}>
+              Log in instead
+            </Link>
+          )}
+          {error instanceof EmailNotVerifiedError && <ResendButton key={email} email={email} />}
+        </FormError>
+
+        <SubmitButton size="lg" className="w-full" busy={text.busy} pending={status === "authed"}>
+          {text.submit}
+        </SubmitButton>
+      </Form>
     </AuthShell>
   );
 }
