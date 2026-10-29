@@ -1,6 +1,7 @@
 import { screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 
+import { useAuth } from "@/features/auth/store";
 import { ShortenForm } from "@/features/shorten/shorten-form";
 import { renderWithQuery } from "@/test-utils/render-with-query";
 
@@ -24,6 +25,7 @@ const fetchMock = jest.fn();
 beforeEach(() => {
   fetchMock.mockReset();
   global.fetch = fetchMock as unknown as typeof fetch;
+  useAuth.setState({ status: "authed", token: "tok", email: "a@b.co" });
 });
 
 async function submit(url: string) {
@@ -43,6 +45,35 @@ describe("ShortenForm", () => {
       "/api/links",
       expect.objectContaining({ body: JSON.stringify({ targetUrl: "https://example.com" }) }),
     );
+  });
+
+  describe("custom link", () => {
+    async function submitWithSlug(slug: string) {
+      const user = userEvent.setup();
+      renderWithQuery(<ShortenForm />);
+      await user.type(screen.getByLabelText("URL to shorten"), "https://example.com");
+      await user.click(screen.getByRole("switch", { name: "Use a custom link" }));
+      await user.type(screen.getByLabelText("Custom link"), slug);
+      await user.click(screen.getByRole("button", { name: "Shorten" }));
+    }
+
+    it("posts the slug and shows the new link", async () => {
+      fetchMock.mockResolvedValue(reply(201, { ...link, slug: "my-link" }));
+      await submitWithSlug("my-link");
+      expect(await screen.findByRole("link", { name: link.shortUrl })).toBeInTheDocument();
+      expect(JSON.parse(fetchMock.mock.calls[0][1].body)).toEqual({
+        targetUrl: "https://example.com",
+        slug: "my-link",
+      });
+    });
+
+    it("shows an error when the slug is taken", async () => {
+      fetchMock.mockResolvedValue(reply(409));
+      await submitWithSlug("taken");
+      expect(await screen.findByRole("alert")).toHaveTextContent(
+        "That link name is taken. Try another",
+      );
+    });
   });
 
   describe("My links cache", () => {

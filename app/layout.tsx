@@ -36,7 +36,10 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
         >
           <QueryProvider>{children}</QueryProvider>
         </ThemeProvider>
-      </body>
+      {/* impeccable-live-start */}
+<script src="http://localhost:8400/live.js?token=8a488d65-b495-46ef-801a-37db35424283"></script>
+{/* impeccable-live-end */}
+</body>
     </html>
   );
 }

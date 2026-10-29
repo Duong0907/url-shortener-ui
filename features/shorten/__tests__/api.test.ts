@@ -36,6 +36,37 @@ describe("createLink", () => {
     });
   });
 
+  it("sends the custom slug when given", async () => {
+    fetchMock.mockResolvedValue(reply(201, link));
+    await createLink("https://example.com", "my-link");
+    expect(JSON.parse(fetchMock.mock.calls[0][1].body)).toEqual({
+      targetUrl: "https://example.com",
+      slug: "my-link",
+    });
+  });
+
+  it("omits an empty slug", async () => {
+    fetchMock.mockResolvedValue(reply(201, link));
+    await createLink("https://example.com", "");
+    expect(JSON.parse(fetchMock.mock.calls[0][1].body)).toEqual({
+      targetUrl: "https://example.com",
+    });
+  });
+
+  it("maps 409 to the slug taken message", async () => {
+    fetchMock.mockResolvedValue(reply(409));
+    await expect(createLink("https://example.com", "taken")).rejects.toThrow(
+      "That link name is taken. Try another",
+    );
+  });
+
+  it("maps 401 to the log in message", async () => {
+    fetchMock.mockResolvedValue(reply(401));
+    await expect(createLink("https://example.com", "my-link")).rejects.toThrow(
+      "Log in to use a custom link",
+    );
+  });
+
   it("sends the token when signed in", async () => {
     useAuth.setState({ status: "authed", token: "tok", email: "a@b.co" });
     fetchMock.mockResolvedValue(reply(201, link));

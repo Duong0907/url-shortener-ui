@@ -10,17 +10,21 @@ export type LinkResponse = {
   createdAt: string;
 };
 
-export async function createLink(targetUrl: string): Promise<LinkResponse> {
+export async function createLink(targetUrl: string, slug?: string): Promise<LinkResponse> {
   let res: Response;
   try {
     res = await authedFetch("/api/links", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ targetUrl }),
+      body: JSON.stringify({ targetUrl, slug: slug || undefined }),
     });
   } catch {
     throw new Error("Can't reach server");
   }
+
+  if (res.status === 401) throw new Error("Log in to use a custom link");
+
+  if (res.status === 409) throw new Error("That link name is taken. Try another");
 
   if (res.status === 400) throw new Error("That URL isn't valid");
 

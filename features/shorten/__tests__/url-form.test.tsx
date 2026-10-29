@@ -1,13 +1,18 @@
 import { act, render, screen, waitFor } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 
+import { useAuth } from "@/features/auth/store";
 import { UrlForm } from "@/features/shorten/url-form";
 
 function setup(props: Partial<React.ComponentProps<typeof UrlForm>> = {}) {
-  const onSubmit = jest.fn(async () => {});
+  const onSubmit = jest.fn<Promise<void>, [{ url: string; slug?: string }]>(async () => {});
   render(<UrlForm error={null} onSubmit={onSubmit} {...props} />);
   return { onSubmit, user: userEvent.setup() };
 }
+
+beforeEach(() => {
+  useAuth.setState({ status: "authed", token: "tok", email: "a@b.co" });
+});
 
 const input = () => screen.getByLabelText("URL to shorten");
 const button = (name = "Shorten") => screen.getByRole("button", { name });
@@ -24,13 +29,13 @@ describe("UrlForm", () => {
     const { onSubmit, user } = setup();
     await user.type(input(), "  https://example.com  ");
     await user.click(button());
-    expect(onSubmit).toHaveBeenCalledWith("https://example.com");
+    expect(onSubmit).toHaveBeenCalledWith({ url: "https://example.com" });
   });
 
   it("submits on Enter", async () => {
     const { onSubmit, user } = setup();
     await user.type(input(), "https://example.com{Enter}");
-    expect(onSubmit).toHaveBeenCalledWith("https://example.com");
+    expect(onSubmit).toHaveBeenCalledWith({ url: "https://example.com" });
   });
 
   it("locks the input, Paste and Shorten while submitting", async () => {
@@ -61,6 +66,59 @@ describe("UrlForm", () => {
   it("shows no alert without an error", () => {
     setup();
     expect(screen.queryByRole("alert")).not.toBeInTheDocument();
+  });
+
+  describe("custom link", () => {
+    const toggle = () => screen.getByRole("switch", { name: "Use a custom link" });
+    const slug = () => screen.getByLabelText("Custom link");
+
+    it("submits the slug when the switch is on", async () => {
+      const { onSubmit, user } = setup();
+      await user.type(input(), "https://example.com");
+      await user.click(toggle());
+      await user.type(slug(), " my-link ");
+      await user.click(button());
+      expect(onSubmit).toHaveBeenCalledWith({ url: "https://example.com", slug: "my-link" });
+    });
+
+    it("omits the slug when the switch was turned off again", async () => {
+      const { onSubmit, user } = setup();
+      await user.type(input(), "https://example.com");
+      await user.click(toggle());
+      await user.type(slug(), "my-link");
+      await user.click(toggle());
+      await user.click(button());
+      expect(onSubmit.mock.calls[0][0].slug).toBeUndefined();
+    });
+
+    it("asks for a slug when the switch is on and the field is empty", async () => {
+      const { onSubmit, user } = setup();
+      await user.type(input(), "https://example.com");
+      await user.click(toggle());
+      await user.click(button());
+      expect(await screen.findByText("Enter a custom link or turn this off")).toBeInTheDocument();
+      expect(onSubmit).not.toHaveBeenCalled();
+    });
+
+    it("shows a field error for an invalid slug and does not submit", async () => {
+      const { onSubmit, user } = setup();
+      await user.type(input(), "https://example.com");
+      await user.click(toggle());
+      await user.type(slug(), "ab");
+      await user.click(button());
+      expect(await screen.findByText("3-32 letters, numbers, - or _")).toBeInTheDocument();
+      expect(slug()).toHaveAttribute("aria-invalid", "true");
+      expect(onSubmit).not.toHaveBeenCalled();
+    });
+
+    it("drops the slug for a visitor", async () => {
+      useAuth.setState({ status: "anon", token: null, email: null });
+      const { onSubmit, user } = setup();
+      expect(toggle()).toHaveAttribute("aria-disabled", "true");
+      await user.type(input(), "https://example.com");
+      await user.click(button());
+      expect(onSubmit.mock.calls[0][0].slug).toBeUndefined();
+    });
   });
 
   describe("Paste button", () => {
