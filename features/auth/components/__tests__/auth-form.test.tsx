@@ -1,8 +1,9 @@
-import { render, screen, waitFor } from "@testing-library/react";
+import { screen, waitFor } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 
 import { AuthForm } from "@/features/auth/components/auth-form";
 import { useAuth } from "@/features/auth/store";
+import { renderWithQuery } from "@/test-utils/render-with-query";
 
 const mockReplace = jest.fn();
 jest.mock("next/navigation", () => ({ useRouter: () => ({ replace: mockReplace }) }));
@@ -25,7 +26,7 @@ beforeEach(() => {
 
 async function fill(mode: "login" | "register", password: string, confirm = password) {
   const user = userEvent.setup();
-  render(<AuthForm mode={mode} />);
+  renderWithQuery(<AuthForm mode={mode} />);
   await user.type(screen.getByLabelText("Email"), "a@b.co");
   await user.type(screen.getByLabelText("Password"), password);
   if (mode === "register") await user.type(screen.getByLabelText("Confirm password"), confirm);
@@ -50,6 +51,8 @@ describe("AuthForm login", () => {
     await user.click(screen.getByRole("button", { name: "Log in" }));
     expect(await screen.findByRole("alert")).toHaveTextContent("Wrong email or password");
     expect(screen.getByRole("button", { name: "Log in" })).toBeEnabled();
+    // A failed login is never retried.
+    expect(fetchMock).toHaveBeenCalledTimes(1);
     expect(screen.queryByRole("button", { name: "Resend email" })).not.toBeInTheDocument();
   });
 
@@ -69,15 +72,41 @@ describe("AuthForm login", () => {
     expect(mockReplace).not.toHaveBeenCalled();
   });
 
+  it("asks for a password without calling the server", async () => {
+    const user = userEvent.setup();
+    renderWithQuery(<AuthForm mode="login" />);
+    await user.type(screen.getByLabelText("Email"), "a@b.co");
+    await user.click(screen.getByRole("button", { name: "Log in" }));
+    expect(await screen.findByText("Enter your password")).toBeInTheDocument();
+    expect(fetchMock).not.toHaveBeenCalled();
+  });
+
+  it("rejects a bad email without calling the server", async () => {
+    const user = userEvent.setup();
+    renderWithQuery(<AuthForm mode="login" />);
+    await user.type(screen.getByLabelText("Email"), "nope");
+    await user.type(screen.getByLabelText("Password"), "pw");
+    await user.click(screen.getByRole("button", { name: "Log in" }));
+    expect(await screen.findByText("Enter a valid email")).toBeInTheDocument();
+    expect(fetchMock).not.toHaveBeenCalled();
+  });
+
+  it("stays busy after a successful login until the redirect", async () => {
+    fetchMock.mockResolvedValueOnce(reply(200, { accessToken: jwt("a@b.co") }));
+    const user = await fill("login", "pw");
+    await user.click(screen.getByRole("button", { name: "Log in" }));
+    expect(await screen.findByRole("button", { name: "Logging in…" })).toBeDisabled();
+  });
+
   it("has no confirm field and links to sign up", () => {
-    render(<AuthForm mode="login" />);
+    renderWithQuery(<AuthForm mode="login" />);
     expect(screen.queryByLabelText("Confirm password")).not.toBeInTheDocument();
     expect(screen.getByRole("link", { name: "Sign up" })).toHaveAttribute("href", "/register");
   });
 
   it("goes home when already signed in", () => {
     useAuth.setState({ status: "authed", token: "tok", email: "a@b.co" });
-    render(<AuthForm mode="login" />);
+    renderWithQuery(<AuthForm mode="login" />);
     expect(mockReplace).toHaveBeenCalledWith("/app/shorten");
   });
 });
@@ -106,16 +135,18 @@ describe("AuthForm register", () => {
   it("rejects a short password without calling the server", async () => {
     const user = await fill("register", "short");
     await user.click(screen.getByRole("button", { name: "Sign up" }));
-    expect(await screen.findByRole("alert")).toHaveTextContent(
-      "Password needs at least 8 characters",
+    expect(await screen.findByText("Password needs at least 8 characters")).toHaveAttribute(
+      "id",
+      "password-error",
     );
+    expect(screen.queryByRole("alert")).not.toBeInTheDocument();
     expect(fetchMock).not.toHaveBeenCalled();
   });
 
   it("rejects mismatched passwords without calling the server", async () => {
     const user = await fill("register", "password123", "password124");
     await user.click(screen.getByRole("button", { name: "Sign up" }));
-    expect(await screen.findByRole("alert")).toHaveTextContent("Passwords don't match");
+    expect(await screen.findByText("Passwords don't match")).toHaveAttribute("id", "confirm-error");
     expect(fetchMock).not.toHaveBeenCalled();
   });
 
@@ -138,7 +169,7 @@ describe("AuthForm register", () => {
   });
 
   it("caps both password fields at 72 characters", () => {
-    render(<AuthForm mode="register" />);
+    renderWithQuery(<AuthForm mode="register" />);
     for (const label of ["Password", "Confirm password"]) {
       expect(screen.getByLabelText(label)).toHaveAttribute("maxLength", "72");
       expect(screen.getByLabelText(label)).toHaveAttribute("autoComplete", "new-password");

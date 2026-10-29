@@ -34,6 +34,19 @@ describe("Typography", () => {
     expect(screen.getByText("text").tagName).toBe("DD");
   });
 
+  it("renders a label linked to its control", () => {
+    render(
+      <>
+        <Typography as="label" htmlFor="name">
+          Name
+        </Typography>
+        <input id="name" />
+      </>,
+    );
+    expect(screen.getByText("Name").tagName).toBe("LABEL");
+    expect(screen.getByLabelText("Name")).toBeInTheDocument();
+  });
+
   it("applies the weight prop", () => {
     render(
       <Typography variant="h4" weight="light">

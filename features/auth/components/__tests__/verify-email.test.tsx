@@ -1,9 +1,10 @@
 import { StrictMode } from "react";
-import { act, render, screen } from "@testing-library/react";
+import { act, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 
 import { VerifyEmail } from "@/features/auth/components/verify-email";
 import { useAuth } from "@/features/auth/store";
+import { renderWithQuery } from "@/test-utils/render-with-query";
 
 const mockReplace = jest.fn();
 jest.mock("next/navigation", () => ({ useRouter: () => ({ replace: mockReplace }) }));
@@ -31,7 +32,7 @@ describe("VerifyEmail", () => {
   it("verifies the token and links to log in", async () => {
     const token = newToken();
     fetchMock.mockResolvedValueOnce(reply(204));
-    render(<VerifyEmail token={token} />);
+    renderWithQuery(<VerifyEmail token={token} />);
     expect(screen.getByRole("status")).toHaveTextContent("Verifying your email…");
     expect(await screen.findByText("Email verified")).toBeInTheDocument();
     expect(screen.getByRole("link", { name: "Log in" })).toHaveAttribute("href", "/login");
@@ -44,7 +45,7 @@ describe("VerifyEmail", () => {
   it("shows the invalid state with a resend form on 400", async () => {
     fetchMock.mockResolvedValueOnce(reply(400)).mockResolvedValueOnce(reply(204));
     const user = userEvent.setup();
-    render(<VerifyEmail token={newToken()} />);
+    renderWithQuery(<VerifyEmail token={newToken()} />);
     expect(await screen.findByRole("alert")).toHaveTextContent(
       "This link is invalid or has expired.",
     );
@@ -56,14 +57,14 @@ describe("VerifyEmail", () => {
   });
 
   it("treats a missing token as invalid without calling the server", () => {
-    render(<VerifyEmail token={null} />);
+    renderWithQuery(<VerifyEmail token={null} />);
     expect(screen.getByRole("alert")).toHaveTextContent("This link is invalid or has expired.");
     expect(fetchMock).not.toHaveBeenCalled();
   });
 
   it("lets the user retry after a network error", async () => {
     fetchMock.mockRejectedValueOnce(new TypeError("fail")).mockResolvedValueOnce(reply(204));
-    render(<VerifyEmail token={newToken()} />);
+    renderWithQuery(<VerifyEmail token={newToken()} />);
     expect(await screen.findByRole("alert")).toHaveTextContent("Can't reach server");
     await userEvent.click(screen.getByRole("button", { name: "Try again" }));
     expect(await screen.findByText("Email verified")).toBeInTheDocument();
@@ -72,7 +73,7 @@ describe("VerifyEmail", () => {
 
   it("posts once under Strict Mode", async () => {
     fetchMock.mockResolvedValue(reply(204));
-    render(
+    renderWithQuery(
       <StrictMode>
         <VerifyEmail token={newToken()} />
       </StrictMode>,
@@ -84,7 +85,7 @@ describe("VerifyEmail", () => {
   it("waits for the session check before posting", async () => {
     useAuth.setState({ status: "loading", token: null, email: null });
     fetchMock.mockResolvedValueOnce(reply(204));
-    render(<VerifyEmail token={newToken()} />);
+    renderWithQuery(<VerifyEmail token={newToken()} />);
     expect(screen.getByRole("status")).toHaveTextContent("Verifying your email…");
     expect(fetchMock).not.toHaveBeenCalled();
     act(() => useAuth.setState({ status: "anon", token: null, email: null }));
@@ -93,7 +94,7 @@ describe("VerifyEmail", () => {
 
   it("sends signed-in users home without using the token", () => {
     useAuth.setState({ status: "authed", token: "tok", email: "a@b.co" });
-    render(<VerifyEmail token={newToken()} />);
+    renderWithQuery(<VerifyEmail token={newToken()} />);
     expect(mockReplace).toHaveBeenCalledWith("/app/shorten");
     expect(fetchMock).not.toHaveBeenCalled();
   });

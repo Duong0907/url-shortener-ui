@@ -1,7 +1,8 @@
-import { render, screen } from "@testing-library/react";
+import { screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 
 import { ResendButton } from "@/features/auth/components/resend-button";
+import { renderWithQuery } from "@/test-utils/render-with-query";
 
 // jsdom has no Response, so fetch returns plain objects.
 const reply = (status: number, body: unknown = {}) => ({
@@ -21,7 +22,7 @@ const button = () => screen.getByRole("button", { name: /Resend email|Sending…
 describe("ResendButton", () => {
   it("sends and stays disabled", async () => {
     fetchMock.mockResolvedValueOnce(reply(204));
-    render(<ResendButton email=" a@b.co " />);
+    renderWithQuery(<ResendButton email=" a@b.co " />);
     await userEvent.click(button());
     expect(await screen.findByRole("status")).toHaveTextContent(
       "Sent. Check your inbox. Use the link in the newest email.",
@@ -33,9 +34,16 @@ describe("ResendButton", () => {
     );
   });
 
+  it("shows Sending… and locks while the request is pending", async () => {
+    fetchMock.mockReturnValueOnce(new Promise(() => {}));
+    renderWithQuery(<ResendButton email="a@b.co" />);
+    await userEvent.click(button());
+    expect(await screen.findByRole("button", { name: "Sending…" })).toBeDisabled();
+  });
+
   it("shows the error and allows a retry", async () => {
     fetchMock.mockResolvedValueOnce(reply(400)).mockResolvedValueOnce(reply(204));
-    render(<ResendButton email="a@b.co" />);
+    renderWithQuery(<ResendButton email="a@b.co" />);
     await userEvent.click(button());
     expect(await screen.findByRole("alert")).toHaveTextContent("Enter a valid email");
     expect(button()).toBeEnabled();
@@ -45,7 +53,7 @@ describe("ResendButton", () => {
   });
 
   it("is disabled without an email", () => {
-    render(<ResendButton email="  " />);
+    renderWithQuery(<ResendButton email="  " />);
     expect(button()).toBeDisabled();
   });
 });

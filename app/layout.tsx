@@ -3,6 +3,8 @@ import { Geist, Source_Serif_4 } from "next/font/google";
 import { cn } from "cn";
 import { ThemeProvider } from "next-themes";
 
+import { QueryProvider } from "@/components/query-provider";
+
 import "./globals.css";
 
 const geist = Geist({ variable: "--font-geist", subsets: ["latin"] });
@@ -32,7 +34,7 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
           enableSystem
           disableTransitionOnChange
         >
-          {children}
+          <QueryProvider>{children}</QueryProvider>
         </ThemeProvider>
       </body>
     </html>

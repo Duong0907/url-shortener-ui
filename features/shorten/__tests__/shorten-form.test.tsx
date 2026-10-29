@@ -1,7 +1,8 @@
-import { render, screen } from "@testing-library/react";
+import { screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 
 import { ShortenForm } from "@/features/shorten/shorten-form";
+import { renderWithQuery } from "@/test-utils/render-with-query";
 
 const link = {
   id: "1",
@@ -27,7 +28,7 @@ beforeEach(() => {
 
 async function submit(url: string) {
   const user = userEvent.setup();
-  render(<ShortenForm />);
+  renderWithQuery(<ShortenForm />);
   await user.type(screen.getByLabelText("URL to shorten"), url);
   await user.click(screen.getByRole("button", { name: "Shorten" }));
   return user;
@@ -44,9 +45,35 @@ describe("ShortenForm", () => {
     );
   });
 
+  describe("My links cache", () => {
+    const cached = { content: [], page: { size: 10, number: 0, totalElements: 0, totalPages: 0 } };
+
+    async function shortenWith(status: number) {
+      fetchMock.mockResolvedValue(reply(status, link));
+      const user = userEvent.setup();
+      const { client } = renderWithQuery(<ShortenForm />);
+      client.setQueryData(["links", 1], cached);
+      await user.type(screen.getByLabelText("URL to shorten"), "https://example.com");
+      await user.click(screen.getByRole("button", { name: "Shorten" }));
+      await screen.findByRole(status === 201 ? "link" : "alert");
+
+      return client;
+    }
+
+    it("marks cached My links pages stale after a link is created", async () => {
+      const client = await shortenWith(201);
+      expect(client.getQueryState(["links", 1])?.isInvalidated).toBe(true);
+    });
+
+    it("leaves the cache alone when the request fails", async () => {
+      const client = await shortenWith(400);
+      expect(client.getQueryState(["links", 1])?.isInvalidated).toBe(false);
+    });
+  });
+
   it("shows an error on 400", async () => {
     fetchMock.mockResolvedValue(reply(400));
-    await submit("nope");
+    await submit("https://nope.example");
     expect(await screen.findByRole("alert")).toHaveTextContent("That URL isn't valid");
   });
 
@@ -73,7 +100,7 @@ describe("ShortenForm", () => {
 
   it("keeps the error visible while the request is retried", async () => {
     fetchMock.mockResolvedValueOnce(reply(400));
-    const user = await submit("nope");
+    const user = await submit("https://nope.example");
     expect(await screen.findByRole("alert")).toBeInTheDocument();
 
     fetchMock.mockReturnValueOnce(new Promise(() => {}));

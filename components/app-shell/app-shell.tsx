@@ -25,6 +25,7 @@ export function AppShell({ children }: { children: React.ReactNode }) {
             <Drawer.Trigger render={<Button variant="ghost" size="icon" aria-label="Open menu" />}>
               <Menu />
             </Drawer.Trigger>
+
             <Drawer.Portal>
               <Drawer.Backdrop className="fixed inset-0 bg-black/10 backdrop-blur-xs transition-opacity data-ending-style:opacity-0 data-starting-style:opacity-0 motion-reduce:transition-none" />
               {/* The viewport enables swipe-to-close and touch scroll locking. */}

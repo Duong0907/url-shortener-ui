@@ -4,8 +4,8 @@ import userEvent from "@testing-library/user-event";
 import { UrlForm } from "@/features/shorten/url-form";
 
 function setup(props: Partial<React.ComponentProps<typeof UrlForm>> = {}) {
-  const onSubmit = jest.fn();
-  render(<UrlForm loading={false} error={null} onSubmit={onSubmit} {...props} />);
+  const onSubmit = jest.fn(async () => {});
+  render(<UrlForm error={null} onSubmit={onSubmit} {...props} />);
   return { onSubmit, user: userEvent.setup() };
 }
 
@@ -33,10 +33,24 @@ describe("UrlForm", () => {
     expect(onSubmit).toHaveBeenCalledWith("https://example.com");
   });
 
-  it("locks the input and button while loading", () => {
-    setup({ loading: true });
+  it("locks the input, Paste and Shorten while submitting", async () => {
+    const { user } = setup({ onSubmit: () => new Promise(() => {}) });
+    await user.type(input(), "https://example.com");
+    await user.click(button());
+    expect(await screen.findByRole("button", { name: "Shortening..." })).toBeDisabled();
     expect(input()).toHaveAttribute("readonly");
-    expect(button("Shortening...")).toBeDisabled();
+    expect(screen.getByRole("button", { name: "Paste" })).toBeDisabled();
+  });
+
+  it("shows a field error for a URL without a scheme and does not submit", async () => {
+    const { onSubmit, user } = setup();
+    await user.type(input(), "example.com");
+    await user.click(button());
+    expect(
+      await screen.findByText("Enter a full URL starting with http:// or https://"),
+    ).toBeInTheDocument();
+    expect(input()).toHaveAttribute("aria-invalid", "true");
+    expect(onSubmit).not.toHaveBeenCalled();
   });
 
   it("shows the error as an alert", () => {
@@ -87,11 +101,6 @@ describe("UrlForm", () => {
       expect(await screen.findByRole("alert")).toBeInTheDocument();
       await user.type(input(), "h");
       expect(screen.queryByRole("alert")).not.toBeInTheDocument();
-    });
-
-    it("is disabled while loading", () => {
-      setup({ loading: true });
-      expect(paste()).toBeDisabled();
     });
   });
 });
