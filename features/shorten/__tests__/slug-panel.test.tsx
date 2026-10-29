@@ -52,10 +52,9 @@ describe("SlugPanel", () => {
     expect(field()).toHaveFocus();
   });
 
-  it("locks the switch and links to log in for a visitor", () => {
+  it("shows only a log in link for a visitor", () => {
     setup("anon");
-    expect(toggle()).toHaveAttribute("aria-disabled", "true");
-    expect(screen.getByText("Available when logged in")).toBeInTheDocument();
+    expect(screen.queryByRole("switch")).not.toBeInTheDocument();
     expect(screen.getByRole("link", { name: "Log in" })).toHaveAttribute("href", "/login");
   });
 

@@ -7,7 +7,7 @@ import { useForm, useWatch } from "react-hook-form";
 import { Form } from "@/components/form/form";
 import { FormError } from "@/components/form/form-error";
 import { SubmitButton } from "@/components/form/submit-button";
-import { TextField } from "@/components/form/text-field";
+import { fieldLabel, TextField } from "@/components/form/text-field";
 import { Button } from "@/components/ui/button";
 import { useAuth } from "@/features/auth/store";
 import { urlSchema } from "@/features/shorten/schema";
@@ -57,13 +57,19 @@ export function UrlForm({ error, onSubmit }: Props) {
 
   return (
     <div className="flex flex-col gap-2">
+      {/* The label sits outside TextField so the form row holds only the input and the button.
+          A label inside the field would push the button off the input's line: up to the label
+          with items-start, or down to the error message with items-end. */}
+      <label htmlFor="url" className={fieldLabel}>
+        URL to shorten
+      </label>
       <Form form={form} onSubmit={handleSubmit} className="flex-row flex-wrap items-start gap-3">
-        <div className="flex-1">
+        <div className="min-w-0 flex-[1_1_16rem]">
           <TextField
             name="url"
-            aria-label="URL to shorten"
             autoFocus
-            placeholder="https://example.com/very/long/link"
+            className="font-mono"
+            placeholder="Paste a long URL"
             onChange={() => setPasteError(null)}
             end={
               <Button
@@ -79,7 +85,11 @@ export function UrlForm({ error, onSubmit }: Props) {
             }
           />
         </div>
-        <SubmitButton busy="Shortening..." disabled={isUrlBlank}>
+        <SubmitButton
+          busy="Shortening..."
+          disabled={isUrlBlank}
+          className="max-sm:w-full disabled:border-foreground/25 disabled:bg-transparent disabled:text-muted-foreground disabled:opacity-100"
+        >
           Shorten
         </SubmitButton>
         <div className="w-full">

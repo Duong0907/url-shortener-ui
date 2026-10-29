@@ -3,7 +3,8 @@
 import { useState } from "react";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 
-import { SectionHeader } from "@/components/ui/section-header";
+import { FormSheet } from "@/components/form-sheet";
+import { Typography } from "@/components/ui/typography";
 import { createLink, type LinkResponse } from "@/features/shorten/api";
 import { LinkTag } from "@/features/shorten/link-tag";
 import { UrlForm } from "@/features/shorten/url-form";
@@ -39,13 +40,27 @@ export function ShortenForm() {
     );
 
   return (
-    <div className="flex flex-col gap-7">
-      <SectionHeader
-        title="Long links in. Tidy links out."
-        description="Paste any URL. Get a short link you can copy, share and track."
-      />
-      <UrlForm error={error} onSubmit={shorten} />
-      <LinkTag key={shortenCount} link={link} />
+    // A container query, so the two columns also stack inside the narrower app shell.
+    <div className="@container">
+      <div className="grid items-start gap-10 @3xl:grid-cols-12 @3xl:gap-12">
+        <header className="flex min-w-0 flex-col gap-5 @3xl:col-span-5 @3xl:pt-12">
+          <Typography variant="display">Long links in. Tidy links out.</Typography>
+          <Typography className="text-pretty text-muted-foreground">
+            Paste any URL. Get a short link you can copy and share.
+          </Typography>
+        </header>
+
+        <FormSheet
+          label="Quick create link"
+          meta={`No. ${String(shortenCount + 1).padStart(4, "0")}`}
+          className="@3xl:col-span-7"
+        >
+          <div className="p-5">
+            <UrlForm error={error} onSubmit={shorten} />
+          </div>
+          <LinkTag key={shortenCount} link={link} />
+        </FormSheet>
+      </div>
     </div>
   );
 }

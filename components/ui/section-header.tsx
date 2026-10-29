@@ -9,10 +9,10 @@ export function SectionHeader({
 }) {
   return (
     <div>
-      <Typography variant="h1" className="mb-2 text-center">
+      <Typography variant="display" className="mb-3 text-center @3xl:text-5xl">
         {title}
       </Typography>
-      <Typography as="p" variant="h4" weight="light" className="mb-16 text-center">
+      <Typography as="p" className="mb-16 text-center text-lg text-muted-foreground">
         {description}
       </Typography>
     </div>

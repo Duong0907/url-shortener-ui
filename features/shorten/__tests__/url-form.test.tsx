@@ -114,7 +114,7 @@ describe("UrlForm", () => {
     it("drops the slug for a visitor", async () => {
       useAuth.setState({ status: "anon", token: null, email: null });
       const { onSubmit, user } = setup();
-      expect(toggle()).toHaveAttribute("aria-disabled", "true");
+      expect(screen.queryByRole("switch")).not.toBeInTheDocument();
       await user.type(input(), "https://example.com");
       await user.click(button());
       expect(onSubmit.mock.calls[0][0].slug).toBeUndefined();

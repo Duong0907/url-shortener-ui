@@ -17,12 +17,23 @@ describe("Typography", () => {
     expect(el).toHaveClass(size);
   });
 
-  it("defaults to body text with regular weight", () => {
+  it("defaults to body text with no weight class", () => {
     render(<Typography>text</Typography>);
     const el = screen.getByText("text");
     expect(el.tagName).toBe("P");
     expect(el).toHaveAttribute("data-slot", "typography");
-    expect(el).toHaveClass("font-normal");
+    expect(el).not.toHaveClass("font-normal");
+  });
+
+  it.each([
+    ["display", "H1", "text-5xl"],
+    ["title", "H2", "text-4xl"],
+    ["heading", "H3", "text-3xl"],
+  ] as const)("renders headline variant %s as <%s> with %s", (variant, tag, size) => {
+    render(<Typography variant={variant}>text</Typography>);
+    const el = screen.getByText("text");
+    expect(el.tagName).toBe(tag);
+    expect(el).toHaveClass("type-headline", size);
   });
 
   it("uses the as prop to override the element", () => {
@@ -62,6 +73,6 @@ describe("Typography", () => {
         text
       </Typography>,
     );
-    expect(screen.getByRole("alert")).toHaveClass("text-destructive", "font-normal");
+    expect(screen.getByRole("alert")).toHaveClass("text-destructive");
   });
 });
