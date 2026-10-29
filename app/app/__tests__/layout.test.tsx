@@ -1,9 +1,13 @@
-import { act, render, screen, waitFor } from "@testing-library/react";
+import { act, screen, waitFor } from "@testing-library/react";
 
 import AppLayout from "@/app/app/layout";
 import { useAuth } from "@/features/auth/store";
+import { renderWithQuery } from "@/test-utils/render-with-query";
 
 const mockReplace = jest.fn();
+jest.mock("@/features/links/api", () => ({
+  listLinks: () => Promise.resolve({ content: [], page: { totalElements: 0 } }),
+}));
 jest.mock("next/navigation", () => ({
   useRouter: () => ({ replace: mockReplace }),
   usePathname: () => "/app/shorten",
@@ -17,7 +21,7 @@ beforeEach(() => {
 });
 
 const renderLayout = () =>
-  render(
+  renderWithQuery(
     <AppLayout>
       <p>page body</p>
     </AppLayout>,

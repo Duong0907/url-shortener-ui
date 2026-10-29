@@ -1,5 +1,6 @@
 import { Typography } from "@/components/ui/typography";
 
+// The heading of every signed-in page: left-aligned like the content below it.
 export function SectionHeader({
   title,
   description,
@@ -8,13 +9,11 @@ export function SectionHeader({
   description: React.ReactNode;
 }) {
   return (
-    <div>
-      <Typography variant="display" className="mb-3 text-center @3xl:text-5xl">
+    <header className="mb-8 flex flex-col gap-3">
+      <Typography variant="display" className="@3xl:text-5xl">
         {title}
       </Typography>
-      <Typography as="p" className="mb-16 text-center text-lg text-muted-foreground">
-        {description}
-      </Typography>
-    </div>
+      <Typography className="text-pretty text-muted-foreground">{description}</Typography>
+    </header>
   );
 }
