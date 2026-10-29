@@ -70,22 +70,22 @@ export function VerifyEmail({ token }: { token: string | null }) {
       aside={
         <>
           {state === "verifying" && (
-            <Typography role="status" className="text-muted-foreground">
+            <Typography role="status" className="text-lg text-pretty text-muted-foreground">
               Verifying your email…
             </Typography>
           )}
           {state === "verified" && (
-            <Typography role="status" className="text-muted-foreground">
+            <Typography role="status" className="text-lg text-pretty text-muted-foreground">
               Email verified
             </Typography>
           )}
           {state === "invalid" && (
-            <Typography role="alert" className="text-destructive">
+            <Typography role="alert" className="text-lg text-pretty text-destructive">
               This link is invalid or has expired.
             </Typography>
           )}
           {state === "error" && (
-            <Typography role="alert" className="text-destructive">
+            <Typography role="alert" className="text-lg text-pretty text-destructive">
               {error}
             </Typography>
           )}

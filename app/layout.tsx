@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { Geist, Source_Serif_4 } from "next/font/google";
+import { Big_Shoulders, IBM_Plex_Mono, IBM_Plex_Sans_Condensed } from "next/font/google";
 import { cn } from "cn";
 import { ThemeProvider } from "next-themes";
 
@@ -7,9 +7,23 @@ import { QueryProvider } from "@/components/query-provider";
 
 import "./globals.css";
 
-const geist = Geist({ variable: "--font-geist", subsets: ["latin"] });
-// The variable makes the font-serif utility (link buttons) resolve to Source Serif 4 too.
-const sourceSerif4 = Source_Serif_4({ variable: "--font-source-serif", subsets: ["latin"] });
+// Headline, prose and labels, and data (URLs, counts) faces: the wire-room set.
+// The opsz axis lets headlines pick Big Shoulders' display cut at large sizes.
+const bigShoulders = Big_Shoulders({
+  variable: "--font-big-shoulders",
+  subsets: ["latin"],
+  axes: ["opsz"],
+});
+const plexCondensed = IBM_Plex_Sans_Condensed({
+  variable: "--font-plex-condensed",
+  weight: ["400", "600", "700"],
+  subsets: ["latin"],
+});
+const plexMono = IBM_Plex_Mono({
+  variable: "--font-plex-mono",
+  weight: ["400", "700"],
+  subsets: ["latin"],
+});
 
 export const metadata: Metadata = {
   title: "URL Shortener",
@@ -22,12 +36,13 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
       lang="en"
       className={cn(
         "font-sans antialiased scrollbar-gutter-stable",
-        geist.variable,
-        sourceSerif4.variable,
+        bigShoulders.variable,
+        plexCondensed.variable,
+        plexMono.variable,
       )}
       suppressHydrationWarning
     >
-      <body className={sourceSerif4.className}>
+      <body>
         <ThemeProvider
           attribute="class"
           defaultTheme="system"
@@ -36,10 +51,7 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
         >
           <QueryProvider>{children}</QueryProvider>
         </ThemeProvider>
-      {/* impeccable-live-start */}
-<script src="http://localhost:8400/live.js?token=8a488d65-b495-46ef-801a-37db35424283"></script>
-{/* impeccable-live-end */}
-</body>
+      </body>
     </html>
   );
 }

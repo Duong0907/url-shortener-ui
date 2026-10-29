@@ -82,7 +82,7 @@ function LinkRow({ link }: { link: LinkResponse }) {
         aria-hidden
         className={cn(
           "size-2 shrink-0 rounded-full",
-          link.active ? "bg-green-500" : "bg-muted-foreground/40",
+          link.active ? "bg-success" : "bg-muted-foreground/40",
         )}
       />
       <span className="sr-only">{link.active ? "Active" : "Inactive"}</span>

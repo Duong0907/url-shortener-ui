@@ -16,6 +16,6 @@ describe("Badge", () => {
         Active
       </Badge>,
     );
-    expect(screen.getByText("Active")).toHaveClass("text-green-700", "extra");
+    expect(screen.getByText("Active")).toHaveClass("text-success", "extra");
   });
 });

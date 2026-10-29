@@ -6,6 +6,10 @@ import { useFormContext } from "react-hook-form";
 import { Input } from "@/components/ui/input";
 import { Typography } from "@/components/ui/typography";
 
+// Small form-line caps, like the printed labels on a telegraph form.
+export const fieldLabel =
+  "font-display text-xs leading-none font-semibold tracking-[0.18em] text-muted-foreground uppercase";
+
 export type TextFieldProps = Omit<
   React.ComponentProps<typeof Input>,
   "name" | "onChange" | "readOnly" | "value" | "defaultValue"
@@ -39,7 +43,7 @@ export function TextField({ name, label, end, className, id, onChange, ...input 
   return (
     <div className="flex flex-col gap-1.5">
       {label && (
-        <Typography as="label" htmlFor={inputId} weight="medium" className="text-sm leading-none">
+        <Typography as="label" htmlFor={inputId} className={fieldLabel}>
           {label}
         </Typography>
       )}

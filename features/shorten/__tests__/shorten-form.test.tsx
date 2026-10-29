@@ -148,6 +148,6 @@ describe("ShortenForm", () => {
     await screen.findByRole("button", { name: "Shorten" });
     const second = screen.getByRole("link", { name: link.shortUrl }).closest("article");
     expect(second).not.toBe(first);
-    expect(second).toHaveClass("animate-in");
+    expect(screen.getByRole("link", { name: link.shortUrl })).toHaveClass("animate-tape-print");
   });
 });

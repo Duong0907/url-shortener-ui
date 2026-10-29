@@ -11,7 +11,7 @@ import { Form } from "@/components/form/form";
 import { FormError } from "@/components/form/form-error";
 import { PasswordField } from "@/components/form/password-field";
 import { SubmitButton } from "@/components/form/submit-button";
-import { TextField } from "@/components/form/text-field";
+import { fieldLabel, TextField } from "@/components/form/text-field";
 import { buttonVariants } from "@/components/ui/button";
 import { Typography } from "@/components/ui/typography";
 import { EmailNotVerifiedError, EmailTakenError, register } from "@/features/auth/api";
@@ -75,12 +75,19 @@ export function AuthForm({ mode }: { mode: "login" | "register" }) {
     return (
       <AuthShell
         title="Check your email"
+        sheet="Sent"
         aside={
-          <Typography role="status" className="text-muted-foreground">
-            We sent a link to <strong>{sentTo}</strong>.
+          <Typography role="status" className="text-lg text-pretty text-muted-foreground">
+            We sent a link to <strong className="font-semibold text-foreground">{sentTo}</strong>.
+            Open it to verify your account, then log in.
           </Typography>
         }
       >
+        {/* The answer to this form is the address the link went to, pasted on as tape. */}
+        <span className={fieldLabel}>Link sent to</span>
+        <span className="animate-tape-print self-start rotate-[-0.6deg] rounded-[3px] bg-tape px-4 py-2.5 font-mono text-lg font-bold break-all text-tape-foreground">
+          {sentTo}
+        </span>
         <ResendButton email={sentTo} />
       </AuthShell>
     );
@@ -91,7 +98,7 @@ export function AuthForm({ mode }: { mode: "login" | "register" }) {
       title={text.title}
       aside={
         <>
-          <Typography className="text-muted-foreground">{text.lead}</Typography>
+          <Typography className="text-lg text-pretty text-muted-foreground">{text.lead}</Typography>
           <Typography className="text-sm">
             {text.prompt}
             &nbsp;

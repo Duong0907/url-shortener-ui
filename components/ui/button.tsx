@@ -3,19 +3,19 @@ import { cva, type VariantProps } from "class-variance-authority";
 import { cn } from "cn";
 
 const variants = cva(
-  "group/button inline-flex shrink-0 cursor-pointer items-center justify-center rounded-lg border border-transparent font-sans text-sm font-normal tracking-[0.08em] whitespace-nowrap uppercase transition-colors outline-none select-none focus-visible:ring-2 focus-visible:ring-highlight active:translate-y-px disabled:pointer-events-none disabled:opacity-50 aria-invalid:border-destructive [&_svg]:pointer-events-none [&_svg]:shrink-0 [&_svg:not([class*='size-'])]:size-4",
+  "group/button inline-flex shrink-0 cursor-pointer items-center justify-center rounded-lg border border-transparent font-display text-sm font-semibold tracking-[0.16em] whitespace-nowrap uppercase transition-colors outline-none select-none focus-visible:ring-2 focus-visible:ring-highlight active:translate-y-px disabled:pointer-events-none disabled:opacity-50 aria-invalid:border-destructive [&_svg]:pointer-events-none [&_svg]:shrink-0 [&_svg:not([class*='size-'])]:size-4",
   {
     variants: {
       variant: {
         default: "bg-foreground text-background hover:bg-foreground/85",
         outline:
-          "border-foreground/20 bg-transparent text-foreground hover:border-foreground hover:bg-foreground hover:text-background aria-expanded:bg-muted",
+          "border-foreground/25 bg-transparent text-foreground hover:border-foreground/50 hover:bg-foreground/5 aria-expanded:bg-muted",
         secondary: "bg-muted text-foreground hover:bg-foreground/10",
         clear: "text-foreground",
         ghost: "text-foreground hover:bg-muted aria-expanded:bg-muted",
         destructive:
           "bg-destructive/10 text-destructive hover:bg-destructive/20 focus-visible:ring-destructive",
-        link: "font-serif tracking-normal normal-case text-foreground underline-offset-4 hover:text-highlight hover:underline",
+        link: "font-sans font-normal tracking-normal normal-case text-highlight underline decoration-highlight/40 underline-offset-4 hover:decoration-highlight",
       },
       size: {
         default: "h-11 gap-2 px-6",

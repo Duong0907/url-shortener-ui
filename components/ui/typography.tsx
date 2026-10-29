@@ -12,6 +12,9 @@ const typographyVariants = cva("", {
       h5: "text-lg",
       h6: "text-base",
       body: "",
+      display: "type-headline text-5xl leading-[0.92] text-balance @3xl:text-6xl",
+      title: "type-headline text-4xl leading-[0.92]",
+      heading: "type-headline text-3xl leading-[0.92]",
     },
     weight: {
       light: "font-light",
@@ -21,7 +24,7 @@ const typographyVariants = cva("", {
       black: "font-black",
     },
   },
-  defaultVariants: { variant: "body", weight: "regular" },
+  defaultVariants: { variant: "body" },
 });
 
 const defaultTag = {
@@ -32,6 +35,9 @@ const defaultTag = {
   h5: "h5",
   h6: "h6",
   body: "p",
+  display: "h1",
+  title: "h2",
+  heading: "h3",
 } as const;
 
 type TypographyProps = React.HTMLAttributes<HTMLElement> &

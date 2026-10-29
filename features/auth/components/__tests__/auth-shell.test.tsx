@@ -11,7 +11,8 @@ describe("AuthShell", () => {
     );
     const title = screen.getByRole("heading", { level: 1 });
     expect(title).toHaveTextContent("Log in");
-    expect(title).toHaveClass("text-2xl", "font-normal");
+    expect(title).toHaveClass("type-headline", "text-5xl");
+    expect(screen.getByRole("region", { name: "Account" })).toBeInTheDocument();
     expect(screen.getByText("Lead")).toBeInTheDocument();
     expect(screen.getByRole("button", { name: "Go" })).toBeInTheDocument();
   });
