@@ -6,6 +6,7 @@ import { renderWithQuery } from "@/test-utils/render-with-query";
 describe("shorten page", () => {
   it("renders the form", () => {
     renderWithQuery(<ShortenPage />);
+    expect(screen.getByRole("heading", { level: 1 })).toHaveTextContent("Shorten");
     expect(screen.getByLabelText("URL to shorten")).toBeInTheDocument();
     expect(metadata.title).toBe("Shorten · URL Shortener");
   });

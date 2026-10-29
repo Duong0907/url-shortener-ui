@@ -3,11 +3,11 @@ import { render, screen } from "@testing-library/react";
 import { SectionHeader } from "@/components/ui/section-header";
 
 describe("SectionHeader", () => {
-  it("renders a centered h1 title and a quiet subtitle", () => {
+  it("renders an h1 title and a quiet subtitle", () => {
     render(<SectionHeader title="Title" description="Sub" />);
     expect(screen.getByRole("heading", { level: 1 })).toHaveTextContent("Title");
     const sub = screen.getByText("Sub");
     expect(sub.tagName).toBe("P");
-    expect(sub).toHaveClass("text-lg", "text-muted-foreground", "text-center");
+    expect(sub).toHaveClass("text-muted-foreground");
   });
 });
