@@ -53,3 +53,11 @@ GEMINI.md
 .aider*
 .mcp.json
 docs/
+.github/hooks/
+.github/skills/
+.github/agents/
+
+DESIGN_SYSTEM.md
+DESIGN.md
+PRODUCT.md
+.impeccable/

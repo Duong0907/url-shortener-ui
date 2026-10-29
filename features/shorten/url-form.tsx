@@ -9,25 +9,36 @@ import { FormError } from "@/components/form/form-error";
 import { SubmitButton } from "@/components/form/submit-button";
 import { TextField } from "@/components/form/text-field";
 import { Button } from "@/components/ui/button";
+import { useAuth } from "@/features/auth/store";
 import { urlSchema } from "@/features/shorten/schema";
+import { SlugPanel } from "@/features/shorten/slug-panel";
 
 type Props = {
   error: string | null;
-  onSubmit: (url: string) => Promise<void>;
+  onSubmit: (values: { url: string; slug?: string }) => Promise<void>;
 };
 
-type Values = { url: string };
+type Values = { url: string; custom?: boolean; slug?: string };
 
 export function UrlForm({ error, onSubmit }: Props) {
   const [pasteError, setPasteError] = useState<string | null>(null);
-  const form = useForm<Values>({ defaultValues: { url: "" }, resolver: zodResolver(urlSchema) });
+  const authed = useAuth((s) => s.status === "authed");
+  const form = useForm<Values>({
+    defaultValues: { url: "", custom: false, slug: "" },
+    resolver: zodResolver(urlSchema),
+  });
+
   const {
     control,
     setValue,
     setFocus,
     formState: { isSubmitting },
   } = form;
-  const blank = !useWatch({ control, name: "url" }).trim();
+
+  const isUrlBlank = !useWatch({ control, name: "url" }).trim();
+
+  const handleSubmit = ({ url, custom, slug }: Values) =>
+    onSubmit(custom && authed ? { url, slug } : { url });
 
   async function paste() {
     try {
@@ -46,11 +57,7 @@ export function UrlForm({ error, onSubmit }: Props) {
 
   return (
     <div className="flex flex-col gap-2">
-      <Form
-        form={form}
-        onSubmit={({ url }) => onSubmit(url)}
-        className="flex-row items-start gap-3"
-      >
+      <Form form={form} onSubmit={handleSubmit} className="flex-row flex-wrap items-start gap-3">
         <div className="flex-1">
           <TextField
             name="url"
@@ -72,9 +79,12 @@ export function UrlForm({ error, onSubmit }: Props) {
             }
           />
         </div>
-        <SubmitButton busy="Shortening..." disabled={blank}>
+        <SubmitButton busy="Shortening..." disabled={isUrlBlank}>
           Shorten
         </SubmitButton>
+        <div className="w-full">
+          <SlugPanel />
+        </div>
       </Form>
       <FormError error={error ?? pasteError} />
     </div>

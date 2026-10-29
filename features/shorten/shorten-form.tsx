@@ -17,7 +17,7 @@ export function ShortenForm() {
   const [shortenCount, setShortenCount] = useState(0);
 
   const { mutateAsync } = useMutation({
-    mutationFn: createLink,
+    mutationFn: ({ url, slug }: { url: string; slug?: string }) => createLink(url, slug),
     onSuccess: (created) => {
       setError(null);
       setLink(created);
@@ -32,8 +32,8 @@ export function ShortenForm() {
   });
 
   // Returning the promise keeps the form submitting while the request runs.
-  const shorten = (url: string) =>
-    mutateAsync(url).then(
+  const shorten = (values: { url: string; slug?: string }) =>
+    mutateAsync(values).then(
       () => {},
       () => {},
     );
