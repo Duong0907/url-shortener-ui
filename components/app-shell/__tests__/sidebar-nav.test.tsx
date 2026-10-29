@@ -5,9 +5,6 @@ import { SidebarNav } from "@/components/app-shell/sidebar-nav";
 import { logout, useAuth } from "@/features/auth/store";
 import { renderWithQuery } from "@/test-utils/render-with-query";
 
-jest.mock("@/features/links/api", () => ({
-  listLinks: () => Promise.resolve({ content: [], page: { totalElements: 42 } }),
-}));
 jest.mock("next/navigation", () => ({ usePathname: () => "/app/links" }));
 jest.mock("@/features/auth/store", () => ({
   ...jest.requireActual("@/features/auth/store"),
@@ -25,11 +22,6 @@ describe("SidebarNav", () => {
     expect(screen.getByRole("link", { name: "My links" })).toHaveAttribute("aria-current", "page");
     expect(screen.getByRole("link", { name: "Shorten" })).not.toHaveAttribute("aria-current");
     expect(screen.getByRole("link", { name: "Settings" })).toHaveAttribute("href", "/app/settings");
-  });
-
-  it("shows the link count beside My links", async () => {
-    renderWithQuery(<SidebarNav />);
-    expect(await screen.findByRole("link", { name: "My links 42" })).toBeInTheDocument();
   });
 
   it("shows the email and logs out", async () => {

@@ -16,4 +16,12 @@ describe("CopyButton", () => {
     render(<CopyButton text="x" variant="ghost" size="xs" className="self-start" />);
     expect(screen.getByRole("button", { name: "Copy" })).toHaveClass("self-start");
   });
+
+  it("shows an icon but keeps the label as its name", async () => {
+    const user = userEvent.setup();
+    render(<CopyButton text="x" icon />);
+    expect(screen.queryByText("Copy")).not.toBeInTheDocument();
+    await user.click(screen.getByRole("button", { name: "Copy" }));
+    expect(screen.getByRole("button", { name: "Copied" })).toBeInTheDocument();
+  });
 });

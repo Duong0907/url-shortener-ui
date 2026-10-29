@@ -5,9 +5,6 @@ import { AppShell } from "@/components/app-shell/app-shell";
 import { useAuth } from "@/features/auth/store";
 import { renderWithQuery } from "@/test-utils/render-with-query";
 
-jest.mock("@/features/links/api", () => ({
-  listLinks: () => Promise.resolve({ content: [], page: { totalElements: 42 } }),
-}));
 jest.mock("next/navigation", () => ({ usePathname: () => "/app/shorten" }));
 
 beforeEach(() => useAuth.setState({ status: "authed", token: "tok", email: "a@b.co" }));
