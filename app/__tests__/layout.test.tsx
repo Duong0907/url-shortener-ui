@@ -4,7 +4,7 @@ import RootLayout, { metadata } from "@/app/layout";
 
 jest.mock("next/font/google", () => ({
   Big_Shoulders: () => ({ variable: "f-display" }),
-  IBM_Plex_Sans_Condensed: () => ({ variable: "f-sans" }),
+  IBM_Plex_Sans: () => ({ variable: "f-sans" }),
   IBM_Plex_Mono: () => ({ variable: "f-mono" }),
 }));
 jest.mock("@/app/globals.css", () => ({}), { virtual: true });

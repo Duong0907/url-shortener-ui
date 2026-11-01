@@ -6,9 +6,10 @@ import { useFormContext } from "react-hook-form";
 import { Input } from "@/components/ui/input";
 import { Typography } from "@/components/ui/typography";
 
-// Small form-line caps, like the printed labels on a telegraph form.
+// Small form-line caps, like the printed labels on a telegraph form, tracked lightly so they
+// read as labels rather than stamps.
 export const fieldLabel =
-  "font-display text-xs leading-none font-semibold tracking-[0.18em] text-muted-foreground uppercase";
+  "text-xs leading-none font-semibold tracking-[0.06em] text-muted-foreground uppercase";
 
 export type TextFieldProps = Omit<
   React.ComponentProps<typeof Input>,

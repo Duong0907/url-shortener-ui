@@ -17,7 +17,7 @@ export function SlugPanel() {
 
   if (status === "anon") {
     return (
-      <div className="flex flex-col gap-1.5 border-t border-dashed border-input pt-4">
+      <div className="flex flex-col gap-1.5 border-t border-border pt-4">
         <span className={fieldLabel}>Custom link · optional</span>
         <Typography className="text-sm text-muted-foreground">
           <Link
@@ -33,7 +33,7 @@ export function SlugPanel() {
   }
 
   return (
-    <div className="flex flex-col gap-3 border-t border-dashed border-input pt-4">
+    <div className="flex flex-col gap-3 border-t border-border pt-4">
       <div className="flex items-center gap-3">
         <div className="flex min-w-0 flex-1 flex-col gap-1.5">
           <span className={fieldLabel}>Custom link · optional</span>

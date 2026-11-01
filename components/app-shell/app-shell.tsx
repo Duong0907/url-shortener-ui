@@ -19,11 +19,11 @@ export function AppShell({ children }: { children: React.ReactNode }) {
 
   return (
     <div className="flex min-h-dvh text-foreground">
-      {/* The wrapper is not clipped, so the toggle can sit on the sidebar's edge rule. */}
+      {/* The wrapper is not clipped, so the toggle can sit on the sidebar's edge. */}
       <div className="sticky top-0 hidden h-dvh shrink-0 md:block">
         <aside
           className={cn(
-            "h-full overflow-hidden border-r border-border transition-[width] duration-300 ease-out motion-reduce:transition-none",
+            "h-full overflow-hidden transition-[width] duration-300 ease-out motion-reduce:transition-none",
             collapsed ? "w-16" : "w-52",
           )}
         >
@@ -64,7 +64,7 @@ export function AppShell({ children }: { children: React.ReactNode }) {
                 <Drawer.Backdrop className="fixed inset-0 bg-black/10 backdrop-blur-xs transition-opacity data-ending-style:opacity-0 data-starting-style:opacity-0 motion-reduce:transition-none" />
                 {/* The viewport enables swipe-to-close and touch scroll locking. */}
                 <Drawer.Viewport className="fixed inset-0">
-                  <Drawer.Popup className="fixed inset-y-0 right-0 w-72 translate-x-(--drawer-swipe-movement-x) border-l border-border bg-background transition-transform data-ending-style:translate-x-full data-starting-style:translate-x-full data-swiping:transition-none motion-reduce:transition-none">
+                  <Drawer.Popup className="fixed inset-y-0 right-0 w-72 translate-x-(--drawer-swipe-movement-x) border-l border-sidebar-border bg-sidebar transition-transform data-ending-style:translate-x-full data-starting-style:translate-x-full data-swiping:transition-none motion-reduce:transition-none">
                     <Drawer.Title className="sr-only">Menu</Drawer.Title>
                     <SidebarNav onNavigate={() => setOpen(false)} />
                   </Drawer.Popup>

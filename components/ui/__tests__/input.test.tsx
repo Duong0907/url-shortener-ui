@@ -15,6 +15,10 @@ describe("Input", () => {
 
   it("is a 44px control with a highlight focus ring", () => {
     render(<Input aria-label="url" />);
-    expect(screen.getByLabelText("url")).toHaveClass("h-11", "focus-visible:ring-highlight");
+    expect(screen.getByLabelText("url")).toHaveClass(
+      "h-11",
+      "focus-visible:border-highlight",
+      "focus-visible:ring-highlight/15",
+    );
   });
 });

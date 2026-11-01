@@ -22,7 +22,7 @@ export function AuthShell({
           {aside}
         </div>
         <FormSheet label={sheet} className="@3xl:col-span-7">
-          <div className="flex flex-col gap-4 p-5">{children}</div>
+          <div className="flex flex-col gap-4 p-6">{children}</div>
         </FormSheet>
       </div>
     </div>

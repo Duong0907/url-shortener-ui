@@ -23,7 +23,7 @@ export function FormSheet({
         className,
       )}
     >
-      <div className="flex min-h-11 items-center justify-between border-b border-border px-5 py-2">
+      <div className="flex min-h-12 items-center justify-between border-b border-border px-6 py-2">
         <span className={fieldLabel}>{label}</span>
         {meta && (
           <span className="font-mono text-sm text-muted-foreground tabular-nums">{meta}</span>

@@ -15,12 +15,14 @@ import { SlugPanel } from "@/features/shorten/slug-panel";
 
 type Props = {
   error: string | null;
+  // A link is on the sheet: Copy leads, so Shorten steps back to an outline.
+  hasResult?: boolean;
   onSubmit: (values: { url: string; slug?: string }) => Promise<void>;
 };
 
 type Values = { url: string; custom?: boolean; slug?: string };
 
-export function UrlForm({ error, onSubmit }: Props) {
+export function UrlForm({ error, hasResult = false, onSubmit }: Props) {
   const [pasteError, setPasteError] = useState<string | null>(null);
   const authed = useAuth((s) => s.status === "authed");
   const form = useForm<Values>({
@@ -56,7 +58,7 @@ export function UrlForm({ error, onSubmit }: Props) {
   }
 
   return (
-    <div className="flex flex-col gap-2">
+    <div className="flex flex-col gap-2.5">
       {/* The label sits outside TextField so the form row holds only the input and the button.
           A label inside the field would push the button off the input's line: up to the label
           with items-start, or down to the error message with items-end. */}
@@ -74,7 +76,7 @@ export function UrlForm({ error, onSubmit }: Props) {
             end={
               <Button
                 type="button"
-                variant="ghost"
+                variant="secondary"
                 size="xs"
                 className="absolute inset-y-0 right-2 my-auto"
                 disabled={isSubmitting}
@@ -88,7 +90,8 @@ export function UrlForm({ error, onSubmit }: Props) {
         <SubmitButton
           busy="Shortening..."
           disabled={isUrlBlank}
-          className="max-sm:w-full disabled:border-foreground/25 disabled:bg-transparent disabled:text-muted-foreground disabled:opacity-100"
+          variant={hasResult ? "outline" : "default"}
+          className="max-sm:w-full disabled:opacity-45"
         >
           Shorten
         </SubmitButton>

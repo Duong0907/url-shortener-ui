@@ -4,88 +4,92 @@
 
 @custom-variant dark (&:is(.dark *));
 
-/* Telegram form: sage paper, near-white form sheet, soft charcoal ink, butter tape for results. */
+/* Telegram form in mist blue, softened: blue-gray paper, near-white form sheet, slate ink,
+   butter tape for results. The ground sits a step deeper than the sheet so the sheet lifts off it. */
 :root {
-  --highlight: oklch(0.46 0.085 255);
-  --tape: oklch(0.89 0.115 92);
-  --tape-foreground: oklch(0.29 0.012 125);
-  --background: oklch(0.955 0.012 125);
-  --foreground: oklch(0.29 0.012 125);
-  --card: oklch(0.988 0.005 115);
-  --card-foreground: oklch(0.29 0.012 125);
-  --popover: oklch(0.988 0.005 115);
-  --popover-foreground: oklch(0.29 0.012 125);
-  --primary: oklch(0.29 0.012 125);
-  --primary-foreground: oklch(0.988 0.005 115);
-  --secondary: oklch(0.925 0.013 125);
-  --secondary-foreground: oklch(0.29 0.012 125);
-  --muted: oklch(0.925 0.013 125);
-  --muted-foreground: oklch(0.49 0.014 125);
-  --accent: oklch(0.925 0.013 125);
-  --accent-foreground: oklch(0.29 0.012 125);
+  --highlight: oklch(0.48 0.1 260);
+  --tape: oklch(0.92 0.085 95);
+  --tape-foreground: oklch(0.34 0.04 90);
+  --background: oklch(0.94 0.017 250);
+  --foreground: oklch(0.32 0.035 255);
+  --card: oklch(0.995 0.004 250);
+  --card-foreground: oklch(0.32 0.035 255);
+  --popover: oklch(0.995 0.004 250);
+  --popover-foreground: oklch(0.32 0.035 255);
+  /* Ink, never blue: buttons are filled with ink only. */
+  --primary: oklch(0.32 0.035 255);
+  --primary-foreground: oklch(0.995 0.004 250);
+  --secondary: oklch(0.925 0.02 250);
+  --secondary-foreground: oklch(0.32 0.035 255);
+  --muted: oklch(0.925 0.02 250);
+  /* 0.5 keeps secondary text above 4.5:1 on the page ground. */
+  --muted-foreground: oklch(0.5 0.03 255);
+  --accent: oklch(0.925 0.02 250);
+  --accent-foreground: oklch(0.32 0.035 255);
   --destructive: oklch(0.52 0.15 30);
   --success: oklch(0.5 0.09 150);
-  --border: oklch(0.86 0.014 125);
-  --input: oklch(0.78 0.016 125);
-  --ring: oklch(0.46 0.085 255);
+  --border: oklch(0.9 0.014 250);
+  --input: oklch(0.82 0.02 250);
+  --ring: oklch(0.55 0.1 260);
   --chart-1: oklch(0.809 0.105 251.813);
   --chart-2: oklch(0.623 0.214 259.815);
   --chart-3: oklch(0.546 0.245 262.881);
   --chart-4: oklch(0.488 0.243 264.376);
   --chart-5: oklch(0.424 0.199 265.638);
-  --radius: 0.375rem;
-  --sidebar: oklch(0.935 0.013 125);
-  --sidebar-foreground: oklch(0.29 0.012 125);
-  --sidebar-primary: oklch(0.29 0.012 125);
-  --sidebar-primary-foreground: oklch(0.988 0.005 115);
-  --sidebar-accent: oklch(0.905 0.014 125);
-  --sidebar-accent-foreground: oklch(0.29 0.012 125);
-  --sidebar-border: oklch(0.86 0.014 125);
-  --sidebar-ring: oklch(0.46 0.085 255);
+  --radius: 0.5rem;
+  /* The sidebar sits a step deeper than the page, like a drawer the current page is pulled from. */
+  --sidebar: oklch(0.9 0.022 250);
+  --sidebar-foreground: oklch(0.32 0.035 255);
+  --sidebar-primary: oklch(0.32 0.035 255);
+  --sidebar-primary-foreground: oklch(0.995 0.004 250);
+  --sidebar-accent: oklch(0.895 0.02 250);
+  --sidebar-accent-foreground: oklch(0.32 0.035 255);
+  --sidebar-border: oklch(0.86 0.02 250);
+  --sidebar-ring: oklch(0.55 0.1 260);
 }
 
-/* Night office: dark sage paper, lit sheet, same tape. */
+/* Night office in mist blue: deep slate paper, lit sheet, same tape. */
 .dark {
-  --highlight: oklch(0.74 0.085 250);
+  --highlight: oklch(0.76 0.085 255);
   --tape: oklch(0.85 0.11 90);
-  --tape-foreground: oklch(0.24 0.012 125);
-  --background: oklch(0.215 0.012 135);
-  --foreground: oklch(0.93 0.01 110);
-  --card: oklch(0.255 0.012 135);
-  --card-foreground: oklch(0.93 0.01 110);
-  --popover: oklch(0.255 0.012 135);
-  --popover-foreground: oklch(0.93 0.01 110);
-  --primary: oklch(0.93 0.01 110);
-  --primary-foreground: oklch(0.215 0.012 135);
-  --secondary: oklch(0.3 0.012 135);
-  --secondary-foreground: oklch(0.93 0.01 110);
-  --muted: oklch(0.3 0.012 135);
-  --muted-foreground: oklch(0.73 0.012 120);
-  --accent: oklch(0.3 0.012 135);
-  --accent-foreground: oklch(0.93 0.01 110);
+  --tape-foreground: oklch(0.24 0.02 255);
+  --background: oklch(0.2 0.02 255);
+  --foreground: oklch(0.94 0.01 250);
+  --card: oklch(0.25 0.022 255);
+  --card-foreground: oklch(0.94 0.01 250);
+  --popover: oklch(0.25 0.022 255);
+  --popover-foreground: oklch(0.94 0.01 250);
+  --primary: oklch(0.94 0.01 250);
+  --primary-foreground: oklch(0.2 0.02 255);
+  --secondary: oklch(0.3 0.022 255);
+  --secondary-foreground: oklch(0.94 0.01 250);
+  --muted: oklch(0.3 0.022 255);
+  --muted-foreground: oklch(0.74 0.025 250);
+  --accent: oklch(0.3 0.022 255);
+  --accent-foreground: oklch(0.94 0.01 250);
   --destructive: oklch(0.72 0.14 28);
-  --success: oklch(0.74 0.09 150);
-  --border: oklch(1 0 0 / 11%);
-  --input: oklch(1 0 0 / 20%);
-  --ring: oklch(0.74 0.085 250);
+  --success: oklch(0.76 0.09 150);
+  --border: oklch(1 0 0 / 10%);
+  --input: oklch(1 0 0 / 24%);
+  --ring: oklch(0.76 0.085 255);
   --chart-1: oklch(0.809 0.105 251.813);
   --chart-2: oklch(0.623 0.214 259.815);
   --chart-3: oklch(0.546 0.245 262.881);
   --chart-4: oklch(0.488 0.243 264.376);
   --chart-5: oklch(0.424 0.199 265.638);
-  --sidebar: oklch(0.24 0.012 135);
-  --sidebar-foreground: oklch(0.93 0.01 110);
-  --sidebar-primary: oklch(0.74 0.085 250);
-  --sidebar-primary-foreground: oklch(0.215 0.012 135);
-  --sidebar-accent: oklch(0.3 0.012 135);
-  --sidebar-accent-foreground: oklch(0.93 0.01 110);
-  --sidebar-border: oklch(1 0 0 / 11%);
-  --sidebar-ring: oklch(0.74 0.085 250);
+  --sidebar: oklch(0.165 0.018 255);
+  --sidebar-foreground: oklch(0.94 0.01 250);
+  --sidebar-primary: oklch(0.94 0.01 250);
+  --sidebar-primary-foreground: oklch(0.2 0.02 255);
+  --sidebar-accent: oklch(0.3 0.022 255);
+  --sidebar-accent-foreground: oklch(0.94 0.01 250);
+  --sidebar-border: oklch(1 0 0 / 8%);
+  --sidebar-ring: oklch(0.76 0.085 255);
 }
 
 @theme inline {
-  --font-sans: var(--font-plex-condensed);
-  --font-display: var(--font-plex-condensed);
+  --font-sans: var(--font-plex-sans);
+  --font-display: var(--font-plex-sans);
   --font-mono: var(--font-plex-mono);
   --color-tape: var(--tape);
   --color-tape-foreground: var(--tape-foreground);
@@ -162,14 +166,14 @@
   }
 }
 
-/* Page titles: Big Shoulders at its heaviest, tall like the signs in a wire room. */
+/* Page titles: Big Shoulders bold, tall like the signs in a wire room, with room between lines. */
 @utility type-headline {
   font-family: var(--font-big-shoulders);
-  font-weight: 800;
+  font-weight: 700;
   /* Pin the display cut; auto sizing picks the wider text cut on small titles. */
   font-variation-settings: "opsz" 72;
-  letter-spacing: 0.005em;
-  line-height: 0.88;
+  letter-spacing: 0.01em;
+  line-height: 1;
 }
 
 /* The result strip prints left to right, like tape from a telegraph printer. */
@@ -188,20 +192,148 @@
   }
 }
 
-/* Idle float, used on the hero avatar */
-@keyframes float {
-  0%,
+/* Feature reel on the home hero: one short scene per feature, played once while its tab is on.
+   Without motion, each scene rests on its final frame and the tabs switch by hand. */
+.reel-progress {
+  transform: scaleX(1);
+  transform-origin: left;
+}
+
+@keyframes reel-progress {
+  from {
+    transform: scaleX(0);
+  }
+  to {
+    transform: scaleX(1);
+  }
+}
+
+@keyframes reel-type {
+  0% {
+    clip-path: inset(0 100% 0 0);
+  }
+  32%,
   100% {
-    transform: translateY(0);
+    clip-path: inset(0 0 0 0);
+  }
+}
+
+@keyframes reel-type-late {
+  0%,
+  8% {
+    clip-path: inset(0 100% 0 0);
+  }
+  38%,
+  100% {
+    clip-path: inset(0 0 0 0);
+  }
+}
+
+@keyframes reel-feed {
+  0%,
+  34% {
+    top: 0;
+    opacity: 0;
+  }
+  36% {
+    opacity: 1;
   }
   50% {
-    transform: translateY(-8px);
+    top: calc(100% - 0.5rem);
+    opacity: 1;
+  }
+  53%,
+  100% {
+    top: calc(100% - 0.5rem);
+    opacity: 0;
+  }
+}
+
+@keyframes reel-print {
+  0%,
+  50% {
+    clip-path: inset(0 100% 0 0);
+    animation-timing-function: steps(10, end);
+  }
+  66%,
+  100% {
+    clip-path: inset(0 0 0 0);
+  }
+}
+
+@keyframes reel-stamp {
+  0%,
+  72% {
+    opacity: 0;
+    transform: rotate(-6deg) scale(1.4);
+  }
+  77%,
+  100% {
+    opacity: 1;
+    transform: rotate(-6deg) scale(1);
+  }
+}
+
+@keyframes reel-row-in {
+  0%,
+  20% {
+    opacity: 0;
+    transform: translateY(-100%);
+    background: var(--tape);
+  }
+  34% {
+    opacity: 1;
+    transform: none;
+    background: var(--tape);
+  }
+  80%,
+  100% {
+    opacity: 1;
+    transform: none;
+    background: transparent;
+  }
+}
+
+@keyframes reel-row-shift {
+  0%,
+  20% {
+    transform: translateY(-100%);
+  }
+  34%,
+  100% {
+    transform: none;
   }
 }
 
 @media (prefers-reduced-motion: no-preference) {
-  .animate-float {
-    animation: float 3s ease-in-out infinite;
+  .reel-progress {
+    animation: reel-progress var(--reel-ms) linear both;
+  }
+  [data-reel-active="true"] .reel-type {
+    animation: reel-type var(--reel-ms) steps(30, end) both;
+  }
+  [data-reel-active="true"] .reel-type-late {
+    animation: reel-type-late var(--reel-ms) steps(9, end) both;
+  }
+  [data-reel-active="true"] .reel-feed {
+    animation: reel-feed var(--reel-ms) ease both;
+  }
+  [data-reel-active="true"] .reel-print {
+    animation: reel-print var(--reel-ms) both;
+  }
+  [data-reel-active="true"] .reel-stamp {
+    animation: reel-stamp var(--reel-ms) both;
+  }
+  [data-reel-active="true"] .reel-row-in {
+    animation: reel-row-in var(--reel-ms) both;
+  }
+  [data-reel-active="true"] .reel-row-shift {
+    animation: reel-row-shift var(--reel-ms) both;
+  }
+  /* Hover or focus holds the reel, so a visitor can read the scene. */
+  [data-reel-paused="true"] .reel-progress,
+  [data-reel-paused="true"] [data-reel-active="true"] * {
+    animation-play-state: paused;
   }
 }
 

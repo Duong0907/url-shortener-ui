@@ -12,9 +12,9 @@ const typographyVariants = cva("", {
       h5: "text-lg",
       h6: "text-base",
       body: "",
-      display: "type-headline text-5xl leading-[0.92] text-balance @3xl:text-6xl",
-      title: "type-headline text-4xl leading-[0.92]",
-      heading: "type-headline text-3xl leading-[0.92]",
+      display: "type-headline text-5xl text-balance @3xl:text-6xl",
+      title: "type-headline text-4xl",
+      heading: "type-headline text-3xl",
     },
     weight: {
       light: "font-light",
