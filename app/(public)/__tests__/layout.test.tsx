@@ -18,6 +18,6 @@ describe("PublicLayout", () => {
     expect(html).toContain('href="/"');
     expect(html).toContain("SHORTENER");
     expect(html).toContain('aria-label="Dark mode"');
-    expect(html).toContain(`Shortener @ ${new Date().getFullYear()}`);
+    expect(html).toContain(`Shortener © ${new Date().getFullYear()}`);
   });
 });

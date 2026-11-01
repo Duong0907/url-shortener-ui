@@ -5,7 +5,7 @@ export function Footer() {
     <footer className="my-8 flex w-full flex-col items-center">
       <div className="mb-8 w-full max-w-250 border-t border-border" />
       <Typography className="text-sm text-muted-foreground">
-        Shortener @ {new Date().getFullYear()}
+        Shortener © {new Date().getFullYear()}
       </Typography>
     </footer>
   );

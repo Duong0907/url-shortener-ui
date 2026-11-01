@@ -25,12 +25,9 @@ export function HomeNotes() {
         <Typography id="how-it-works" variant="title">
           How it works
         </Typography>
-        <ol className="grid border-t border-dashed border-input @2xl:grid-cols-3">
+        <ol className="grid gap-x-8 @2xl:grid-cols-3">
           {steps.map((step, i) => (
-            <li
-              key={step.title}
-              className="flex flex-col gap-2 border-b border-dashed border-input py-5 @2xl:border-b-0 @2xl:not-last:border-r @2xl:not-first:pl-6 @2xl:not-last:pr-6"
-            >
+            <li key={step.title} className="flex flex-col gap-2 border-t border-border py-5">
               <span className="font-mono text-sm text-muted-foreground tabular-nums">
                 {String(i + 1).padStart(2, "0")}
               </span>
@@ -60,9 +57,7 @@ export function HomeNotes() {
                 key={extra.title}
                 className="flex flex-col gap-1 border-b border-border py-4 @md:flex-row @md:gap-6"
               >
-                <dt className="font-display text-sm font-semibold tracking-[0.16em] uppercase @md:w-40 @md:shrink-0">
-                  {extra.title}
-                </dt>
+                <dt className="font-semibold @md:w-40 @md:shrink-0">{extra.title}</dt>
                 <dd className="text-pretty text-muted-foreground">{extra.text}</dd>
               </div>
             ))}

@@ -15,8 +15,10 @@ const link = {
 describe("LinkTag", () => {
   it("shows an empty tag without a link", () => {
     render(<LinkTag link={null} />);
-    expect(screen.getByText("your-link")).toBeInTheDocument();
+    expect(screen.getByText("Your short link appears here")).toBeInTheDocument();
     expect(screen.queryByRole("button", { name: "Copy" })).not.toBeInTheDocument();
+    // The details wait for a link.
+    expect(screen.queryByText("Chars")).not.toBeInTheDocument();
   });
 
   it("shows the short link, Active and Never for a link without expiry", () => {

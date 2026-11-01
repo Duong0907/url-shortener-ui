@@ -7,7 +7,8 @@ describe("Button", () => {
     render(<Button>Go</Button>);
     const btn = screen.getByRole("button", { name: "Go" });
     expect(btn).toHaveAttribute("data-slot", "button");
-    expect(btn).toHaveClass("bg-foreground", "h-11", "uppercase");
+    expect(btn).toHaveClass("bg-foreground", "h-11");
+    expect(btn).not.toHaveClass("uppercase");
   });
 
   it("applies variant, size and custom class", () => {

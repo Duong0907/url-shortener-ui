@@ -115,7 +115,7 @@ function LinkRow({ link }: { link: LinkResponse }) {
         </span>
       </div>
       {!link.active ? (
-        <span className="shrink-0 rounded-full bg-secondary px-2 py-0.5 text-[0.7rem] font-semibold tracking-[0.14em] text-muted-foreground uppercase">
+        <span className="shrink-0 rounded-full bg-secondary px-2 py-0.5 text-xs font-semibold tracking-[0.06em] text-muted-foreground uppercase">
           Inactive
         </span>
       ) : (

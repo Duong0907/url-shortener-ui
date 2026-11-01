@@ -21,18 +21,19 @@ export function UserMenu() {
   if (status === "anon") {
     return (
       <div className="flex items-center gap-2">
-        {/* Hidden on phones so the nav fits at 375px; the sign-up page links to log in. */}
+        <Link href="/login" className={buttonVariants({ variant: "ghost", size: "sm" })}>
+          Log in
+        </Link>
+        {/* Outline, so it never outweighs Shorten. Hidden on phones so the nav fits at 375px;
+            the log-in page links to sign up. */}
         <Link
-          href="/login"
+          href="/register"
           className={buttonVariants({
-            variant: "ghost",
+            variant: "outline",
             size: "sm",
             className: "hidden sm:inline-flex",
           })}
         >
-          Log in
-        </Link>
-        <Link href="/register" className={buttonVariants({ size: "sm" })}>
           Sign up
         </Link>
       </div>

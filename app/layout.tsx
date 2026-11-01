@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { Big_Shoulders, IBM_Plex_Mono, IBM_Plex_Sans_Condensed } from "next/font/google";
+import { Big_Shoulders, IBM_Plex_Mono, IBM_Plex_Sans } from "next/font/google";
 import { cn } from "cn";
 import { ThemeProvider } from "next-themes";
 
@@ -14,8 +14,8 @@ const bigShoulders = Big_Shoulders({
   subsets: ["latin"],
   axes: ["opsz"],
 });
-const plexCondensed = IBM_Plex_Sans_Condensed({
-  variable: "--font-plex-condensed",
+const plexSans = IBM_Plex_Sans({
+  variable: "--font-plex-sans",
   weight: ["400", "600", "700"],
   subsets: ["latin"],
 });
@@ -37,7 +37,7 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
       className={cn(
         "font-sans antialiased scrollbar-gutter-stable",
         bigShoulders.variable,
-        plexCondensed.variable,
+        plexSans.variable,
         plexMono.variable,
       )}
       suppressHydrationWarning
