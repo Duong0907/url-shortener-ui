@@ -16,6 +16,12 @@ describe("useRedirectIfSignedIn", () => {
     expect(mockReplace).toHaveBeenCalledWith("/app/shorten");
   });
 
+  it("sends signed-in users to the page they came from", () => {
+    useAuth.setState({ status: "authed", token: "tok", email: "a@b.co" });
+    renderHook(() => useRedirectIfSignedIn("/app/links"));
+    expect(mockReplace).toHaveBeenCalledWith("/app/links");
+  });
+
   it.each(["loading", "anon"] as const)("stays when the status is %s", (status) => {
     useAuth.setState({ status, token: null, email: null });
     const { result } = renderHook(() => useRedirectIfSignedIn());

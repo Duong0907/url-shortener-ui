@@ -19,7 +19,13 @@ export default function AppLayout({ children }: { children: React.ReactNode }) {
   // One owner for redirects: after log out (or an ended session) go home, else go to log in.
   useEffect(() => {
     if (status === "authed") wasAuthed.current = true;
-    if (status === "anon") router.replace(wasAuthed.current ? "/" : "/login");
+    if (status === "anon") {
+      router.replace(
+        wasAuthed.current
+          ? "/"
+          : `/login?next=${encodeURIComponent(location.pathname + location.search)}`,
+      );
+    }
   }, [status, router]);
 
   return <AppShell>{status === "authed" ? children : null}</AppShell>;

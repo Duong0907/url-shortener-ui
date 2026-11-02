@@ -25,10 +25,11 @@ const renderLayout = () =>
   );
 
 describe("AppLayout", () => {
-  it("sends signed-out users to log in", () => {
+  it("sends signed-out users to log in, remembering the page", () => {
+    window.history.pushState({}, "", "/app/links?page=2");
     useAuth.setState({ status: "anon", token: null, email: null });
     renderLayout();
-    expect(mockReplace).toHaveBeenCalledWith("/login");
+    expect(mockReplace).toHaveBeenCalledWith("/login?next=%2Fapp%2Flinks%3Fpage%3D2");
     expect(screen.queryByText("page body")).not.toBeInTheDocument();
   });
 
@@ -48,11 +49,12 @@ describe("AppLayout", () => {
   });
 
   it("restores the session on a fresh load", async () => {
+    window.history.pushState({}, "", "/app/shorten");
     useAuth.setState({ status: "loading", token: null, email: null });
     fetchMock.mockResolvedValue({ ok: false, status: 401, json: async () => ({}) });
     renderLayout();
     expect(screen.queryByText("page body")).not.toBeInTheDocument();
     expect(fetchMock).toHaveBeenCalledWith("/api/auth/refresh", expect.anything());
-    await waitFor(() => expect(mockReplace).toHaveBeenCalledWith("/login"));
+    await waitFor(() => expect(mockReplace).toHaveBeenCalledWith("/login?next=%2Fapp%2Fshorten"));
   });
 });
