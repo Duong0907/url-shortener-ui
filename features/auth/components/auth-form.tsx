@@ -16,6 +16,7 @@ import { buttonVariants } from "@/components/ui/button";
 import { Typography } from "@/components/ui/typography";
 import { EmailNotVerifiedError, EmailTakenError, register } from "@/features/auth/api";
 import { AuthShell } from "@/features/auth/components/auth-shell";
+import { GoogleButton } from "@/features/auth/components/google-button";
 import { ResendButton } from "@/features/auth/components/resend-button";
 import { loginSchema, registerSchema, type AuthValues } from "@/features/auth/schemas";
 import { login } from "@/features/auth/store";
@@ -46,10 +47,29 @@ const textsByMode = {
 
 const linkClass = buttonVariants({ variant: "link" });
 
-export function AuthForm({ mode }: { mode: "login" | "register" }) {
-  const status = useRedirectIfSignedIn();
+// Errors /auth/callback passes back from Google. Unknown codes read as a plain failure.
+const googleErrors: Record<string, string> = {
+  email_not_verified: "Verify your Google email first, or log in with email and password.",
+  oauth_failed: "Google sign-in failed. Try again.",
+};
+
+// next is the in-app page to return to after login, already checked by safeNext.
+export function AuthForm({
+  mode,
+  next,
+  googleError,
+}: {
+  mode: "login" | "register";
+  next?: string;
+  googleError?: string;
+}) {
+  const status = useRedirectIfSignedIn(next);
   const [showPassword, setShowPassword] = useState(false);
   const text = textsByMode[mode];
+  const otherHref = next ? `${text.href}?next=${encodeURIComponent(next)}` : text.href;
+  const googleMessage = googleError
+    ? (googleErrors[googleError] ?? googleErrors.oauth_failed)
+    : null;
   const schema: z.ZodType<AuthValues, AuthValues> = mode === "login" ? loginSchema : registerSchema;
 
   const form = useForm<AuthValues>({
@@ -102,7 +122,7 @@ export function AuthForm({ mode }: { mode: "login" | "register" }) {
           <Typography className="text-sm">
             {text.prompt}
             &nbsp;
-            <Link href={text.href} className={linkClass}>
+            <Link href={otherHref} className={linkClass}>
               {text.other}
             </Link>
           </Typography>
@@ -130,7 +150,7 @@ export function AuthForm({ mode }: { mode: "login" | "register" }) {
           />
         )}
 
-        <FormError error={error}>
+        <FormError error={error ?? googleMessage}>
           {error instanceof EmailTakenError && (
             <Link href="/login" className={linkClass}>
               Log in instead
@@ -142,6 +162,11 @@ export function AuthForm({ mode }: { mode: "login" | "register" }) {
         <SubmitButton size="lg" className="w-full" busy={text.busy} pending={status === "authed"}>
           {text.submit}
         </SubmitButton>
+
+        <span className="flex items-center gap-3 font-mono text-xs text-muted-foreground uppercase before:h-px before:flex-1 before:bg-border after:h-px after:flex-1 after:bg-border">
+          or
+        </span>
+        <GoogleButton next={next} />
       </Form>
     </AuthShell>
   );

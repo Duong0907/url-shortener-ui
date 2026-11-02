@@ -176,3 +176,42 @@ describe("AuthForm register", () => {
     }
   });
 });
+
+describe("AuthForm next and Google", () => {
+  it("redirects to next after login", async () => {
+    fetchMock.mockResolvedValueOnce(reply(200, { accessToken: jwt("a@b.co") }));
+    const user = userEvent.setup();
+    renderWithQuery(<AuthForm mode="login" next="/app/links" />);
+    await user.type(screen.getByLabelText("Email"), "a@b.co");
+    await user.type(screen.getByLabelText("Password"), "pw");
+    await user.click(screen.getByRole("button", { name: "Log in" }));
+    await waitFor(() => expect(mockReplace).toHaveBeenCalledWith("/app/links"));
+  });
+
+  it("keeps next on the sign up link", () => {
+    renderWithQuery(<AuthForm mode="login" next="/app/links" />);
+    expect(screen.getByRole("link", { name: "Sign up" })).toHaveAttribute(
+      "href",
+      "/register?next=%2Fapp%2Flinks",
+    );
+  });
+
+  it.each([
+    ["email_not_verified", "Verify your Google email first, or log in with email and password."],
+    ["oauth_failed", "Google sign-in failed. Try again."],
+    ["weird", "Google sign-in failed. Try again."],
+  ])("shows the Google error %s", (code, message) => {
+    renderWithQuery(<AuthForm mode="login" googleError={code} />);
+    expect(screen.getByRole("alert")).toHaveTextContent(message);
+  });
+
+  it.each([
+    ["login", "Log in"],
+    ["register", "Sign up"],
+  ] as const)("shows the Google button below the submit button on %s", (mode, submit) => {
+    renderWithQuery(<AuthForm mode={mode} />);
+    const button = screen.getByRole("button", { name: submit });
+    const google = screen.getByRole("link", { name: "Continue with Google" });
+    expect(button.compareDocumentPosition(google) & Node.DOCUMENT_POSITION_FOLLOWING).toBeTruthy();
+  });
+});
