@@ -14,7 +14,7 @@ describe("login page", () => {
   it("renders the login form", async () => {
     renderWithQuery(await LoginPage(props({})));
     expect(screen.getByRole("heading", { level: 1 })).toHaveTextContent("Log in");
-    expect(metadata.title).toBe("Log in · URL Shortener");
+    expect(metadata.title).toBe("Log in · Fast Shortener");
   });
 
   it("passes next and the Google error to the form", async () => {

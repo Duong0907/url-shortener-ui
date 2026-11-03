@@ -21,7 +21,27 @@ const focusRing = "outline-none focus-visible:ring-2 focus-visible:ring-highligh
 // Secondary text on the deeper sidebar: muted-foreground is too light there for 4.5:1.
 const sidebarMuted = "text-sidebar-foreground/75";
 
-export const wordmark = "text-base font-bold tracking-[0.14em]";
+export const wordmark = "inline-flex items-center gap-2 text-base font-bold tracking-[0.14em]";
+
+// The form-field mark from app/icon.svg, drawn in theme tokens so it follows dark mode.
+// size-4 lines it up with the nav icons when the sidebar collapses.
+export function LogoMark() {
+  return (
+    <svg viewBox="0 0 64 64" aria-hidden className="size-4 shrink-0">
+      <rect
+        x="4"
+        y="14"
+        width="56"
+        height="36"
+        rx="8"
+        strokeWidth="4"
+        className="fill-card stroke-current"
+      />
+      <rect x="14" y="23" width="4" height="18" rx="1" className="fill-current" />
+      <rect x="24" y="35" width="26" height="6" rx="1" className="fill-tape" />
+    </svg>
+  );
+}
 
 // Shared by the desktop sidebar and the phone drawer: an index of the form's sections.
 // The /app guard redirects after log out. Only the desktop sidebar collapses to icons.
@@ -39,15 +59,18 @@ export function SidebarNav({
   return (
     <div className="flex h-full flex-col bg-sidebar text-sidebar-foreground">
       {/* Same height and rule as the public nav bar and the phone header. Collapsed, the
-          wordmark shrinks to its first letter. */}
+          wordmark shrinks to its mark. */}
       <div className="flex min-h-14.25 items-center border-b border-sidebar-border px-6">
         <Link
           href="/app/shorten"
           onClick={onNavigate}
-          aria-label={collapsed ? "Shortener" : undefined}
+          aria-label={collapsed ? "Fast Shortener" : undefined}
           className={cn("rounded-sm whitespace-nowrap", focusRing)}
         >
-          <span className={wordmark}>{collapsed ? "S" : "SHORTENER"}</span>
+          <span className={wordmark}>
+            <LogoMark />
+            {!collapsed && "FAST SHORTENER"}
+          </span>
         </Link>
       </div>
 

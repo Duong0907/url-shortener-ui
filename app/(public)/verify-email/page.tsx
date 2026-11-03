@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 
 import { VerifyEmail } from "@/features/auth/components/verify-email";
 
-export const metadata: Metadata = { title: "Verify email · URL Shortener" };
+export const metadata: Metadata = { title: "Verify email · Fast Shortener" };
 
 export default async function VerifyEmailPage({ searchParams }: PageProps<"/verify-email">) {
   const { token } = await searchParams;

@@ -16,7 +16,7 @@ describe("RootLayout", () => {
   });
 
   it("exports metadata", () => {
-    expect(metadata.title).toBe("URL Shortener");
+    expect(metadata.title).toBe("Fast Shortener");
   });
 
   it("renders fonts and children", () => {

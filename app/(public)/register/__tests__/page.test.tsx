@@ -14,6 +14,6 @@ describe("register page", () => {
   it("renders the register form", async () => {
     renderWithQuery(await RegisterPage(props({})));
     expect(screen.getByRole("heading", { level: 1 })).toHaveTextContent("Create account");
-    expect(metadata.title).toBe("Sign up · URL Shortener");
+    expect(metadata.title).toBe("Sign up · Fast Shortener");
   });
 });
