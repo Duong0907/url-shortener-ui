@@ -12,7 +12,7 @@ import { listLinks } from "@/features/links/api";
 import { byDay, dayLabel, fmtDate, splitTarget } from "@/features/links/services";
 import type { LinkResponse } from "@/features/shorten/api";
 
-const focusRing = "outline-none focus-visible:ring-2 focus-visible:ring-highlight";
+const focusRing = "outline-none focus-visible:ring-2 focus-visible:ring-ring";
 
 export function MyLinks() {
   const {
@@ -102,7 +102,7 @@ function LinkRow({ link }: { link: LinkResponse }) {
           rel="noreferrer"
           title={link.shortUrl}
           className={cn(
-            "rounded-sm font-mono text-lg font-bold break-all transition-colors hover:text-highlight",
+            "rounded-sm text-lg font-medium break-all text-primary underline-offset-4 hover:underline",
             focusRing,
           )}
         >
@@ -115,14 +115,14 @@ function LinkRow({ link }: { link: LinkResponse }) {
         </span>
       </div>
       {!link.active ? (
-        <span className="shrink-0 rounded-full bg-secondary px-2 py-0.5 text-xs font-semibold tracking-[0.06em] text-muted-foreground uppercase">
+        <span className="shrink-0 rounded-md bg-secondary px-2 py-0.5 text-xs font-medium text-muted-foreground">
           Inactive
         </span>
       ) : (
         link.expiresAt && (
           <time
             dateTime={link.expiresAt}
-            className="shrink-0 font-mono text-sm whitespace-nowrap text-muted-foreground tabular-nums"
+            className="shrink-0 text-sm whitespace-nowrap text-muted-foreground tabular-nums"
           >
             Expires {fmtDate(link.expiresAt)}
           </time>

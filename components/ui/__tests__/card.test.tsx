@@ -5,7 +5,7 @@ import { Card } from "@/components/ui/card";
 describe("Card", () => {
   it("is a border-only surface", () => {
     render(<Card data-testid="c">x</Card>);
-    expect(screen.getByTestId("c")).toHaveClass("rounded-lg", "border-foreground/10", "p-5");
+    expect(screen.getByTestId("c")).toHaveClass("rounded-xl", "border-border", "bg-card", "p-5");
   });
 
   it("sets size and merges className", () => {

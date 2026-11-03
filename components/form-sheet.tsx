@@ -2,8 +2,8 @@ import { cn } from "cn";
 
 import { fieldLabel } from "@/components/form/text-field";
 
-// The telegraph-form sheet: a labelled header row over the caller's content. Callers pad their
-// own sections, so full-width rows (like the link details) can reach the sheet edges.
+// A dashboard card with a labelled header row over the caller's content. Callers pad their
+// own sections, so full-width rows (like the link details) can reach the card edges.
 export function FormSheet({
   label,
   meta,
@@ -19,15 +19,13 @@ export function FormSheet({
     <section
       aria-label={label}
       className={cn(
-        "min-w-0 overflow-hidden rounded-lg border border-input bg-card shadow-[0_1px_2px_rgb(0_0_0/5%),0_18px_40px_-20px_rgb(0_0_0/22%)]",
+        "min-w-0 overflow-hidden rounded-xl border border-border bg-card shadow-[0_1px_2px_rgb(16_24_40/5%)]",
         className,
       )}
     >
       <div className="flex min-h-12 items-center justify-between border-b border-border px-6 py-2">
         <span className={fieldLabel}>{label}</span>
-        {meta && (
-          <span className="font-mono text-sm text-muted-foreground tabular-nums">{meta}</span>
-        )}
+        {meta && <span className="text-sm text-muted-foreground tabular-nums">{meta}</span>}
       </div>
       {children}
     </section>

@@ -70,7 +70,6 @@ export function UrlForm({ error, hasResult = false, onSubmit }: Props) {
           <TextField
             name="url"
             autoFocus
-            className="font-mono"
             placeholder="Paste a long URL"
             onChange={() => setPasteError(null)}
             end={

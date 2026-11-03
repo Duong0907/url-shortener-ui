@@ -8,8 +8,8 @@ import type { LinkResponse } from "@/features/shorten/api";
 const fmtDate = (iso: string) =>
   new Date(iso).toLocaleDateString(undefined, { day: "numeric", month: "short", year: "numeric" });
 
-// The bottom of the form sheet: the short link pasted on as tape, then the link's details.
-// Before a result there is only the slot the tape will print into; the details wait for a link.
+// The bottom of the form card: the short link on the blue result tint, then the link's details.
+// Before a result there is only the slot the result will reveal into; the details wait for a link.
 export function LinkTag({ link }: { link: LinkResponse | null }) {
   return (
     <article aria-live="polite" className="flex flex-col">
@@ -68,7 +68,7 @@ function ShortLink({ link }: { link: LinkResponse }) {
       aria-label={link.shortUrl}
       target="_blank"
       rel="noreferrer"
-      className="animate-tape-print inline-block max-w-full rotate-[-0.6deg] [overflow-wrap:anywhere] rounded-[3px] bg-tape px-4 py-2.5 font-mono text-xl font-bold text-tape-foreground shadow-[0_1px_1px_rgb(0_0_0/8%)] outline-none hover:underline hover:decoration-1 hover:underline-offset-4 focus-visible:ring-2 focus-visible:ring-highlight focus-visible:ring-offset-2 focus-visible:ring-offset-card @md:text-2xl"
+      className="animate-tape-print inline-block max-w-full wrap-anywhere rounded-lg bg-tape px-4 p y-2.5 text-xl font-semibold text-tape-foreground outline-none hover:underline hover:decoration-1 hover:underline-offset-4 focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-card @md:text-2xl"
     >
       {/* The protocol is noise on a strip; the label and href keep the full URL. */}
       <span className="break-all opacity-60">
@@ -83,7 +83,7 @@ function Meta({ label, children }: { label: string; children: React.ReactNode })
   return (
     <div className="flex min-w-0 flex-col gap-1.5 border-border px-6 py-3 odd:border-r max-sm:nth-[-n+2]:border-b sm:border-r sm:last-of-type:border-r-0">
       <dt className={fieldLabel}>{label}</dt>
-      <dd className="font-mono text-sm whitespace-nowrap tabular-nums">{children}</dd>
+      <dd className="text-sm whitespace-nowrap tabular-nums">{children}</dd>
     </div>
   );
 }

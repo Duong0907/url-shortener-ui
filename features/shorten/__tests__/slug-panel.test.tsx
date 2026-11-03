@@ -56,6 +56,8 @@ describe("SlugPanel", () => {
     setup("anon");
     expect(screen.queryByRole("switch")).not.toBeInTheDocument();
     expect(screen.getByRole("link", { name: "Log in" })).toHaveAttribute("href", "/login");
+    // Underlined at rest: colour alone does not set a link apart from muted text (WCAG 1.4.1).
+    expect(screen.getByRole("link", { name: "Log in" })).toHaveClass("underline");
   });
 
   it("locks the switch without a log in link while the session loads", () => {

@@ -16,18 +16,18 @@ const ITEMS = [
   { href: "/app/settings", label: "Settings", Icon: Settings },
 ];
 
-const focusRing = "outline-none focus-visible:ring-2 focus-visible:ring-highlight";
+const focusRing = "outline-none focus-visible:ring-2 focus-visible:ring-ring";
 
-// Secondary text on the deeper sidebar: muted-foreground is too light there for 4.5:1.
-const sidebarMuted = "text-sidebar-foreground/75";
+// Secondary text on the sidebar: a softened foreground that still clears 4.5:1 on white.
+const sidebarMuted = "text-sidebar-foreground/80";
 
-export const wordmark = "inline-flex items-center gap-2 text-base font-bold tracking-[0.14em]";
+export const wordmark = "inline-flex items-center gap-2 text-lg font-semibold tracking-tight";
 
-// The form-field mark from app/icon.svg, drawn in theme tokens so it follows dark mode.
-// size-4 lines it up with the nav icons when the sidebar collapses.
+// The mark from app/icon.svg, drawn in theme tokens so it follows dark mode.
+// size-5 keeps it centred over the nav icons when the sidebar collapses.
 export function LogoMark() {
   return (
-    <svg viewBox="0 0 64 64" aria-hidden className="size-4 shrink-0">
+    <svg viewBox="0 0 64 64" aria-hidden className="size-5 shrink-0 text-primary">
       <rect
         x="4"
         y="14"
@@ -38,7 +38,7 @@ export function LogoMark() {
         className="fill-card stroke-current"
       />
       <rect x="14" y="23" width="4" height="18" rx="1" className="fill-current" />
-      <rect x="24" y="35" width="26" height="6" rx="1" className="fill-tape" />
+      <rect x="24" y="35" width="26" height="6" rx="1" className="fill-chart-4" />
     </svg>
   );
 }
@@ -57,7 +57,7 @@ export function SidebarNav({
   const email = useAuth((s) => s.email);
 
   return (
-    <div className="flex h-full flex-col bg-sidebar text-sidebar-foreground">
+    <div className="flex h-full flex-col border-r border-sidebar-border bg-sidebar text-sidebar-foreground">
       {/* Same height and rule as the public nav bar and the phone header. Collapsed, the
           wordmark shrinks to its mark. */}
       <div className="flex min-h-14.25 items-center border-b border-sidebar-border px-6">
@@ -69,19 +69,19 @@ export function SidebarNav({
         >
           <span className={wordmark}>
             <LogoMark />
-            {!collapsed && "FAST SHORTENER"}
+            {!collapsed && "Fast Shortener"}
           </span>
         </Link>
       </div>
 
       <nav aria-label="Main" className="relative flex flex-col gap-1 px-3 py-3">
-        {/* The current page is a lit sheet pulled out of the deeper sidebar. It slides between
-            the items, so changing page moves it instead of swapping two highlights. Items are
-            h-9 with gap-1, so each step is 2.5rem. */}
+        {/* The current page sits on a blue-tint pill. It slides between the items, so changing
+            page moves it instead of swapping two highlights. Items are h-9 with gap-1, so each
+            step is 2.5rem. */}
         {active >= 0 && (
           <span
             aria-hidden
-            className="absolute inset-x-3 top-3 h-9 rounded-md bg-card shadow-[0_1px_2px_rgb(0_0_0/8%),0_4px_10px_-6px_rgb(0_0_0/18%)] transition-transform duration-300 ease-out motion-reduce:transition-none"
+            className="absolute inset-x-3 top-3 h-9 rounded-md bg-sidebar-accent transition-transform duration-300 ease-out motion-reduce:transition-none"
             style={{ transform: `translateY(${active * 2.5}rem)` }}
           />
         )}
@@ -98,8 +98,8 @@ export function SidebarNav({
               "relative flex h-9 items-center gap-3 rounded-md px-3 text-base font-medium whitespace-nowrap transition-colors duration-300 motion-reduce:transition-none",
               focusRing,
               i === active
-                ? "font-semibold text-sidebar-foreground"
-                : cn(sidebarMuted, "hover:text-sidebar-foreground"),
+                ? "text-sidebar-accent-foreground"
+                : cn(sidebarMuted, "hover:bg-muted hover:text-sidebar-foreground"),
             )}
           >
             <Icon className="size-4 shrink-0" strokeWidth={1.75} aria-hidden />
@@ -132,7 +132,7 @@ export function SidebarNav({
         <div className="mt-auto flex flex-col gap-3 border-t border-sidebar-border p-5">
           <div className="flex min-w-0 flex-col gap-1.5">
             <span className={cn(fieldLabel, sidebarMuted)}>Signed in as</span>
-            <span title={email ?? undefined} className="truncate font-mono text-sm">
+            <span title={email ?? undefined} className="truncate text-sm">
               {email}
             </span>
           </div>

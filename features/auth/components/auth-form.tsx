@@ -103,9 +103,9 @@ export function AuthForm({
           </Typography>
         }
       >
-        {/* The answer to this form is the address the link went to, pasted on as tape. */}
+        {/* The answer to this form is the address the link went to, shown on the blue result tint. */}
         <span className={fieldLabel}>Link sent to</span>
-        <span className="animate-tape-print self-start rotate-[-0.6deg] rounded-[3px] bg-tape px-4 py-2.5 font-mono text-lg font-bold break-all text-tape-foreground">
+        <span className="animate-tape-print self-start rounded-lg bg-tape px-4 py-2.5 text-lg font-semibold break-all text-tape-foreground">
           {sentTo}
         </span>
         <ResendButton email={sentTo} />
@@ -163,7 +163,7 @@ export function AuthForm({
           {text.submit}
         </SubmitButton>
 
-        <span className="flex items-center gap-3 font-mono text-xs text-muted-foreground uppercase before:h-px before:flex-1 before:bg-border after:h-px after:flex-1 after:bg-border">
+        <span className="flex items-center gap-3 text-sm text-muted-foreground before:h-px before:flex-1 before:bg-border after:h-px after:flex-1 after:bg-border">
           or
         </span>
         <GoogleButton next={next} />

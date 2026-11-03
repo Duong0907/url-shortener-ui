@@ -7,7 +7,7 @@ describe("Button", () => {
     render(<Button>Go</Button>);
     const btn = screen.getByRole("button", { name: "Go" });
     expect(btn).toHaveAttribute("data-slot", "button");
-    expect(btn).toHaveClass("bg-foreground", "h-11");
+    expect(btn).toHaveClass("bg-primary", "h-10");
     expect(btn).not.toHaveClass("uppercase");
   });
 
@@ -17,7 +17,7 @@ describe("Button", () => {
         Del
       </Button>,
     );
-    expect(screen.getByRole("button")).toHaveClass("text-destructive", "h-12", "extra");
+    expect(screen.getByRole("button")).toHaveClass("text-destructive", "h-11", "extra");
   });
 
   it("is disabled when disabled prop is set", () => {
@@ -31,5 +31,10 @@ describe("Button", () => {
     expect(cls).toContain("h-auto");
     expect(cls).not.toContain("h-11");
     expect(cls).not.toContain("px-6");
+  });
+
+  it("underlines the link variant at rest", () => {
+    render(<Button variant="link">Sign up</Button>);
+    expect(screen.getByRole("button")).toHaveClass("underline", "text-primary");
   });
 });

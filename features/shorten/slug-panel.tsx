@@ -22,7 +22,7 @@ export function SlugPanel() {
         <Typography className="text-sm text-muted-foreground">
           <Link
             href="/login"
-            className="rounded-sm text-highlight underline underline-offset-4 outline-none hover:decoration-2 focus-visible:ring-2 focus-visible:ring-highlight"
+            className="rounded-sm text-primary underline decoration-primary/40 underline-offset-4 outline-none hover:decoration-primary focus-visible:ring-2 focus-visible:ring-ring"
           >
             Log in
           </Link>
@@ -53,13 +53,7 @@ export function SlugPanel() {
 
       {enabled && (
         <div className="flex flex-col gap-1.5">
-          <TextField
-            name="slug"
-            aria-label="Custom link"
-            placeholder="my-link"
-            autoFocus
-            className="font-mono"
-          />
+          <TextField name="slug" aria-label="Custom link" placeholder="my-link" autoFocus />
           {!formState.errors.slug && (
             <Typography className="text-xs text-muted-foreground">
               3-32 letters, numbers, - or _

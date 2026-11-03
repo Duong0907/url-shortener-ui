@@ -28,7 +28,7 @@ export function HomeNotes() {
         <ol className="grid gap-x-8 @2xl:grid-cols-3">
           {steps.map((step, i) => (
             <li key={step.title} className="flex flex-col gap-2 border-t border-border py-5">
-              <span className="font-mono text-sm text-muted-foreground tabular-nums">
+              <span className="text-sm text-muted-foreground tabular-nums">
                 {String(i + 1).padStart(2, "0")}
               </span>
               <Typography variant="heading">{step.title}</Typography>

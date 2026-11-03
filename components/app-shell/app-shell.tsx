@@ -35,7 +35,7 @@ export function AppShell({ children }: { children: React.ReactNode }) {
           aria-label={collapsed ? "Expand sidebar" : "Collapse sidebar"}
           aria-expanded={!collapsed}
           onClick={() => setCollapsed((c) => !c)}
-          className="absolute top-[2.85rem] -right-3 z-10 size-6 rounded-full border-border bg-background text-muted-foreground shadow-[0_1px_2px_rgb(0_0_0/8%)] hover:bg-background hover:text-foreground aria-expanded:bg-background"
+          className="absolute top-[2.85rem] -right-3 z-10 size-6 rounded-full border-border bg-card text-muted-foreground shadow-[0_1px_2px_rgb(16_24_40/8%)] hover:bg-card hover:text-foreground aria-expanded:bg-card"
         >
           <ChevronLeft
             className={cn(
@@ -49,10 +49,10 @@ export function AppShell({ children }: { children: React.ReactNode }) {
 
       <div className="flex min-w-0 flex-1 flex-col">
         {/* Wordmark on the left like the public nav; the menu sits right, within thumb reach. */}
-        <header className="flex min-h-14.25 items-center justify-between gap-3 border-b border-border px-4 md:hidden">
+        <header className="flex min-h-14.25 items-center justify-between gap-3 border-b border-border bg-card px-4 md:hidden">
           <span className={wordmark}>
             <LogoMark />
-            FAST SHORTENER
+            Fast Shortener
           </span>
           <div className="flex items-center gap-2">
             <ThemeSwitch />

@@ -3,9 +3,7 @@ import { renderToStaticMarkup } from "react-dom/server";
 import RootLayout, { metadata } from "@/app/layout";
 
 jest.mock("next/font/google", () => ({
-  Big_Shoulders: () => ({ variable: "f-display" }),
-  IBM_Plex_Sans: () => ({ variable: "f-sans" }),
-  IBM_Plex_Mono: () => ({ variable: "f-mono" }),
+  Inter: () => ({ variable: "f-sans" }),
 }));
 jest.mock("@/app/globals.css", () => ({}), { virtual: true });
 
@@ -25,8 +23,8 @@ describe("RootLayout", () => {
     );
     expect(html).toContain('lang="en"');
     expect(html).toContain("f-sans");
-    expect(html).toContain("f-display");
-    expect(html).toContain("f-mono");
+    expect(html).not.toContain("f-display");
+    expect(html).not.toContain("f-mono");
     expect(html).toContain("<p>kid</p>");
     expect(html).not.toContain("SHORTENER");
   });
