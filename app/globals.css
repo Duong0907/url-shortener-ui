@@ -4,93 +4,95 @@
 
 @custom-variant dark (&:is(.dark *));
 
-/* Telegram form in mist blue, softened: blue-gray paper, near-white form sheet, slate ink,
-   butter tape for results. The ground sits a step deeper than the sheet so the sheet lifts off it. */
+/* Figma "Shortener" dashboard: white surfaces on a gray-blue ground, one strong blue
+   (Primary/700), Gray Blue neutrals. --tape keeps its name: it is the soft blue tint that
+   marks a fresh result. */
 :root {
-  --highlight: oklch(0.48 0.1 260);
-  --tape: oklch(0.92 0.085 95);
-  --tape-foreground: oklch(0.34 0.04 90);
-  --background: oklch(0.94 0.017 250);
-  --foreground: oklch(0.32 0.035 255);
-  --card: oklch(0.995 0.004 250);
-  --card-foreground: oklch(0.32 0.035 255);
-  --popover: oklch(0.995 0.004 250);
-  --popover-foreground: oklch(0.32 0.035 255);
-  /* Ink, never blue: buttons are filled with ink only. */
-  --primary: oklch(0.32 0.035 255);
-  --primary-foreground: oklch(0.995 0.004 250);
-  --secondary: oklch(0.925 0.02 250);
-  --secondary-foreground: oklch(0.32 0.035 255);
-  --muted: oklch(0.925 0.02 250);
-  /* 0.5 keeps secondary text above 4.5:1 on the page ground. */
-  --muted-foreground: oklch(0.5 0.03 255);
-  --accent: oklch(0.925 0.02 250);
-  --accent-foreground: oklch(0.32 0.035 255);
-  --destructive: oklch(0.52 0.15 30);
-  --success: oklch(0.5 0.09 150);
-  --border: oklch(0.9 0.014 250);
-  --input: oklch(0.82 0.02 250);
-  --ring: oklch(0.55 0.1 260);
-  --chart-1: oklch(0.809 0.105 251.813);
-  --chart-2: oklch(0.623 0.214 259.815);
-  --chart-3: oklch(0.546 0.245 262.881);
-  --chart-4: oklch(0.488 0.243 264.376);
-  --chart-5: oklch(0.424 0.199 265.638);
+  --highlight: #1b48da;
+  --tape: #eff6ff;
+  --tape-foreground: #1b48da;
+  --background: #f8f9fa;
+  --foreground: #181820;
+  --card: #ffffff;
+  --card-foreground: #181820;
+  --popover: #ffffff;
+  --popover-foreground: #181820;
+  --primary: #1b48da;
+  --primary-foreground: #ffffff;
+  --secondary: #f6f6f9;
+  --secondary-foreground: #181820;
+  --muted: #f6f6f9;
+  /* Gray Blue/500 keeps secondary text above 4.5:1 on the ground and on muted fills. */
+  --muted-foreground: #686c8f;
+  --accent: #f6f6f9;
+  --accent-foreground: #181820;
+  --destructive: #dc2626;
+  /* Darker than Figma's green so white badge text stays above 4.5:1. */
+  --success: #15803d;
+  --success-foreground: #ffffff;
+  --border: #ececf2;
+  --input: #d6d6e1;
+  --ring: #1b48da;
+  --chart-1: #3ee19a;
+  --chart-2: #0e9f7e;
+  --chart-3: #1b48da;
+  --chart-4: #8cb8fa;
+  --chart-5: #f5a93a;
   --radius: 0.5rem;
-  /* The sidebar sits a step deeper than the page, like a drawer the current page is pulled from. */
-  --sidebar: oklch(0.9 0.022 250);
-  --sidebar-foreground: oklch(0.32 0.035 255);
-  --sidebar-primary: oklch(0.32 0.035 255);
-  --sidebar-primary-foreground: oklch(0.995 0.004 250);
-  --sidebar-accent: oklch(0.895 0.02 250);
-  --sidebar-accent-foreground: oklch(0.32 0.035 255);
-  --sidebar-border: oklch(0.86 0.02 250);
-  --sidebar-ring: oklch(0.55 0.1 260);
+  --sidebar: #ffffff;
+  --sidebar-foreground: #3b3c51;
+  --sidebar-primary: #1b48da;
+  --sidebar-primary-foreground: #ffffff;
+  --sidebar-accent: #eff6ff;
+  --sidebar-accent-foreground: #1b48da;
+  --sidebar-border: #ececf2;
+  --sidebar-ring: #1b48da;
 }
 
-/* Night office in mist blue: deep slate paper, lit sheet, same tape. */
+/* Dark: Gray Blue/950 ground, cards one step up. The blue is lifted so it reads on the dark
+   ground, and takes dark text, since white on it falls under 4.5:1. */
 .dark {
-  --highlight: oklch(0.76 0.085 255);
-  --tape: oklch(0.85 0.11 90);
-  --tape-foreground: oklch(0.24 0.02 255);
-  --background: oklch(0.2 0.02 255);
-  --foreground: oklch(0.94 0.01 250);
-  --card: oklch(0.25 0.022 255);
-  --card-foreground: oklch(0.94 0.01 250);
-  --popover: oklch(0.25 0.022 255);
-  --popover-foreground: oklch(0.94 0.01 250);
-  --primary: oklch(0.94 0.01 250);
-  --primary-foreground: oklch(0.2 0.02 255);
-  --secondary: oklch(0.3 0.022 255);
-  --secondary-foreground: oklch(0.94 0.01 250);
-  --muted: oklch(0.3 0.022 255);
-  --muted-foreground: oklch(0.74 0.025 250);
-  --accent: oklch(0.3 0.022 255);
-  --accent-foreground: oklch(0.94 0.01 250);
-  --destructive: oklch(0.72 0.14 28);
-  --success: oklch(0.76 0.09 150);
-  --border: oklch(1 0 0 / 10%);
-  --input: oklch(1 0 0 / 24%);
-  --ring: oklch(0.76 0.085 255);
-  --chart-1: oklch(0.809 0.105 251.813);
-  --chart-2: oklch(0.623 0.214 259.815);
-  --chart-3: oklch(0.546 0.245 262.881);
-  --chart-4: oklch(0.488 0.243 264.376);
-  --chart-5: oklch(0.424 0.199 265.638);
-  --sidebar: oklch(0.165 0.018 255);
-  --sidebar-foreground: oklch(0.94 0.01 250);
-  --sidebar-primary: oklch(0.94 0.01 250);
-  --sidebar-primary-foreground: oklch(0.2 0.02 255);
-  --sidebar-accent: oklch(0.3 0.022 255);
-  --sidebar-accent-foreground: oklch(0.94 0.01 250);
-  --sidebar-border: oklch(1 0 0 / 8%);
-  --sidebar-ring: oklch(0.76 0.085 255);
+  --highlight: #6489f7;
+  --tape: rgb(27 72 218 / 20%);
+  --tape-foreground: #c9d6fc;
+  --background: #181820;
+  --foreground: #f6f6f9;
+  --card: #20212c;
+  --card-foreground: #f6f6f9;
+  --popover: #20212c;
+  --popover-foreground: #f6f6f9;
+  --primary: #6489f7;
+  --primary-foreground: #181820;
+  --secondary: #343446;
+  --secondary-foreground: #f6f6f9;
+  --muted: #343446;
+  --muted-foreground: #b1b3c8;
+  --accent: #343446;
+  --accent-foreground: #f6f6f9;
+  --destructive: #f87171;
+  --success: #4ade80;
+  --success-foreground: #181820;
+  --border: #3b3c51;
+  --input: #535576;
+  --ring: #6489f7;
+  --chart-1: #3ee19a;
+  --chart-2: #0e9f7e;
+  --chart-3: #1b48da;
+  --chart-4: #8cb8fa;
+  --chart-5: #f5a93a;
+  --sidebar: #20212c;
+  --sidebar-foreground: #ececf2;
+  --sidebar-primary: #6489f7;
+  --sidebar-primary-foreground: #181820;
+  --sidebar-accent: rgb(27 72 218 / 20%);
+  --sidebar-accent-foreground: #8faaf8;
+  --sidebar-border: #3b3c51;
+  --sidebar-ring: #6489f7;
 }
 
 @theme inline {
-  --font-sans: var(--font-plex-sans);
-  --font-display: var(--font-plex-sans);
-  --font-mono: var(--font-plex-mono);
+  --font-sans: var(--font-inter);
+  --font-display: var(--font-inter);
   --color-tape: var(--tape);
   --color-tape-foreground: var(--tape-foreground);
   --color-sidebar-ring: var(--sidebar-ring);
@@ -111,6 +113,7 @@
   --color-border: var(--border);
   --color-destructive: var(--destructive);
   --color-success: var(--success);
+  --color-success-foreground: var(--success-foreground);
   --color-accent-foreground: var(--accent-foreground);
   --color-accent: var(--accent);
   --color-muted-foreground: var(--muted-foreground);
@@ -166,17 +169,15 @@
   }
 }
 
-/* Page titles: Big Shoulders bold, tall like the signs in a wire room, with room between lines. */
+/* Page titles: Inter semibold, pulled in slightly as in the Figma headings. */
 @utility type-headline {
-  font-family: var(--font-big-shoulders);
-  font-weight: 700;
-  /* Pin the display cut; auto sizing picks the wider text cut on small titles. */
-  font-variation-settings: "opsz" 72;
-  letter-spacing: 0.01em;
-  line-height: 1;
+  font-family: var(--font-inter);
+  font-weight: 600;
+  letter-spacing: -0.02em;
+  line-height: 1.15;
 }
 
-/* The result strip prints left to right, like tape from a telegraph printer. */
+/* A fresh result reveals left to right in steps, as if typed out. */
 @keyframes tape-print {
   from {
     clip-path: inset(0 100% 0 0);

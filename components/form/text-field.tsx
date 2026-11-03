@@ -8,8 +8,7 @@ import { Typography } from "@/components/ui/typography";
 
 // Small form-line caps, like the printed labels on a telegraph form, tracked lightly so they
 // read as labels rather than stamps.
-export const fieldLabel =
-  "text-xs leading-none font-semibold tracking-[0.06em] text-muted-foreground uppercase";
+export const fieldLabel = "text-sm leading-none font-medium text-foreground";
 
 export type TextFieldProps = Omit<
   React.ComponentProps<typeof Input>,

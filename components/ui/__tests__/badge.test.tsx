@@ -7,7 +7,8 @@ describe("Badge", () => {
     render(<Badge>Sale</Badge>);
     const badge = screen.getByText("Sale");
     expect(badge).toHaveAttribute("data-slot", "badge");
-    expect(badge).toHaveClass("rounded-full", "uppercase", "bg-foreground");
+    expect(badge).toHaveClass("rounded-md", "bg-primary");
+    expect(badge).not.toHaveClass("uppercase");
   });
 
   it("applies the variant and className", () => {
@@ -16,6 +17,10 @@ describe("Badge", () => {
         Active
       </Badge>,
     );
-    expect(screen.getByText("Active")).toHaveClass("text-success", "extra");
+    expect(screen.getByText("Active")).toHaveClass(
+      "bg-success",
+      "text-success-foreground",
+      "extra",
+    );
   });
 });

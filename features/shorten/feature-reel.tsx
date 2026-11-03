@@ -31,7 +31,7 @@ export function FeatureReel({ className }: { className?: string }) {
   return (
     <div
       className={cn(
-        "max-w-md flex-col gap-4 rounded-lg border border-foreground/8 bg-foreground/[0.04] px-5 pt-4 pb-5",
+        "max-w-md flex-col gap-4 rounded-xl border border-border bg-card px-5 pt-4 pb-5 shadow-[0_1px_2px_rgb(16_24_40/5%)]",
         className,
       )}
       style={{ "--reel-ms": `${SCENE_MS}ms` } as React.CSSProperties}
@@ -52,12 +52,12 @@ export function FeatureReel({ className }: { className?: string }) {
             onClick={() => show(i)}
             className={cn(
               fieldLabel,
-              "relative min-w-0 flex-1 cursor-pointer truncate pb-2.5 text-left outline-none hover:text-foreground focus-visible:rounded-sm focus-visible:ring-2 focus-visible:ring-highlight",
+              "relative min-w-0 flex-1 cursor-pointer truncate pb-2.5 text-left text-muted-foreground outline-none hover:text-foreground focus-visible:rounded-sm focus-visible:ring-2 focus-visible:ring-ring",
               i === current && "text-foreground",
             )}
           >
             {feature.name}
-            <span className="absolute inset-x-0 bottom-0 h-0.5 rounded-full bg-foreground/12" />
+            <span className="absolute inset-x-0 bottom-0 h-0.5 rounded-full bg-border" />
             {i === current ? (
               <span
                 key={run}
@@ -66,7 +66,7 @@ export function FeatureReel({ className }: { className?: string }) {
               />
             ) : (
               i < current && (
-                <span className="absolute inset-x-0 bottom-0 h-0.5 rounded-full bg-foreground/30" />
+                <span className="absolute inset-x-0 bottom-0 h-0.5 rounded-full bg-primary/40" />
               )
             )}
           </button>
@@ -98,7 +98,7 @@ function ShortenScene() {
   return (
     <>
       <span className={fieldLabel}>Long URL</span>
-      <div className="overflow-hidden rounded-md border border-input bg-card px-3 py-2 font-mono text-sm text-muted-foreground">
+      <div className="overflow-hidden rounded-lg border border-input bg-card px-3 py-2 text-sm text-muted-foreground">
         <span className="reel-type block truncate">
           https://www.example-shop.com/collections/summer-2026/linen-shirts?utm_source=newsletter
         </span>
@@ -106,7 +106,7 @@ function ShortenScene() {
       <Feed />
       <div className="flex min-h-12 items-center gap-3.5">
         <Tape slug="k7Qp2x" />
-        <span className="reel-stamp -rotate-6 rounded-sm border-[1.5px] border-current px-1.5 py-0.5 text-xs font-bold tracking-widest text-success uppercase">
+        <span className="reel-stamp -rotate-6 rounded-md bg-success px-2 py-0.5 text-xs font-medium text-success-foreground">
           Copied
         </span>
       </div>
@@ -118,7 +118,7 @@ function CustomScene() {
   return (
     <>
       <span className={fieldLabel}>Your own link name</span>
-      <div className="rounded-md border border-input bg-card px-3 py-2 font-mono text-sm">
+      <div className="rounded-lg border border-input bg-card px-3 py-2 text-sm">
         <span className="text-muted-foreground">/</span>
         <span className="reel-type-late inline-block">rsvp-june</span>
       </div>
@@ -149,7 +149,7 @@ function LinksScene() {
               row.fresh ? "reel-row-in" : "reel-row-shift",
             )}
           >
-            <span className="truncate font-mono font-bold">
+            <span className="truncate font-semibold text-primary">
               <span className="font-normal text-muted-foreground">/</span>
               {row.slug}
             </span>
@@ -173,7 +173,7 @@ function Feed() {
 
 function Tape({ slug }: { slug: string }) {
   return (
-    <span className="reel-print inline-block rotate-[-0.8deg] rounded-[3px] bg-tape px-3.5 py-1.5 font-mono text-lg font-bold text-tape-foreground shadow-[0_1px_1px_rgb(0_0_0/8%)]">
+    <span className="reel-print inline-block rounded-lg bg-tape px-3.5 py-1.5 text-lg font-semibold text-tape-foreground">
       <span className="opacity-60">/</span>
       {slug}
     </span>

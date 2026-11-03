@@ -13,12 +13,12 @@ describe("Input", () => {
     expect(input).toHaveValue("hello");
   });
 
-  it("is a 44px control with a highlight focus ring", () => {
+  it("is a 40px control with a primary focus ring", () => {
     render(<Input aria-label="url" />);
     expect(screen.getByLabelText("url")).toHaveClass(
-      "h-11",
-      "focus-visible:border-highlight",
-      "focus-visible:ring-highlight/15",
+      "h-10",
+      "focus-visible:border-primary",
+      "focus-visible:ring-ring/20",
     );
   });
 });

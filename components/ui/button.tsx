@@ -3,29 +3,28 @@ import { cva, type VariantProps } from "class-variance-authority";
 import { cn } from "cn";
 
 const variants = cva(
-  "group/button inline-flex shrink-0 cursor-pointer items-center justify-center rounded-lg border border-transparent font-sans text-base font-semibold whitespace-nowrap transition-colors outline-none select-none focus-visible:ring-2 focus-visible:ring-highlight active:translate-y-px disabled:pointer-events-none disabled:opacity-50 aria-invalid:border-destructive [&_svg]:pointer-events-none [&_svg]:shrink-0 [&_svg:not([class*='size-'])]:size-4",
+  "group/button inline-flex shrink-0 cursor-pointer items-center justify-center rounded-lg border border-transparent font-sans text-base font-medium whitespace-nowrap transition-colors outline-none select-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background active:translate-y-px disabled:pointer-events-none disabled:opacity-50 aria-invalid:border-destructive [&_svg]:pointer-events-none [&_svg]:shrink-0 [&_svg:not([class*='size-'])]:size-4",
   {
     variants: {
       variant: {
-        default: "bg-foreground text-background hover:bg-foreground/85",
-        outline:
-          "border-foreground/25 bg-transparent text-foreground hover:border-foreground/50 hover:bg-foreground/5 aria-expanded:bg-muted",
-        secondary: "bg-muted text-foreground hover:bg-foreground/10",
+        default: "bg-primary text-primary-foreground hover:bg-primary/90",
+        outline: "border-border bg-card text-foreground hover:bg-muted aria-expanded:bg-muted",
+        secondary: "bg-muted text-foreground hover:bg-muted/70",
         clear: "text-foreground",
         ghost: "text-foreground hover:bg-muted aria-expanded:bg-muted",
         destructive:
           "bg-destructive/10 text-destructive hover:bg-destructive/20 focus-visible:ring-destructive",
-        link: "font-normal text-highlight underline decoration-highlight/40 underline-offset-4 hover:decoration-highlight",
+        link: "font-normal text-primary underline decoration-primary/40 underline-offset-4 hover:decoration-primary",
       },
       size: {
-        default: "h-11 gap-2 px-6",
-        xs: "h-8 gap-1 px-2.5 text-sm",
-        sm: "h-9 gap-1.5 px-4 text-sm",
-        lg: "h-12 gap-2 px-8",
-        icon: "size-11",
+        default: "h-10 gap-2 px-4",
+        xs: "h-7 gap-1 px-2.5 text-sm",
+        sm: "h-8 gap-1.5 px-3 text-sm",
+        lg: "h-11 gap-2 px-6",
+        icon: "size-10",
         "icon-xs": "size-7 [&_svg:not([class*='size-'])]:size-3.5",
-        "icon-sm": "size-9",
-        "icon-lg": "size-12",
+        "icon-sm": "size-8",
+        "icon-lg": "size-11",
       },
     },
     // Links sit inline with text, so they drop the control height and padding.

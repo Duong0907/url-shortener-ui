@@ -10,11 +10,11 @@ export function NavBar() {
       <div className="flex min-h-14.25 w-full max-w-250 flex-row items-center justify-between gap-3 border-b border-border">
         <Link
           href="/"
-          className="rounded-sm outline-none focus-visible:ring-2 focus-visible:ring-highlight"
+          className="rounded-sm outline-none focus-visible:ring-2 focus-visible:ring-ring"
         >
           <span className={wordmark}>
             <LogoMark />
-            FAST SHORTENER
+            Fast Shortener
           </span>
         </Link>
         <div className="flex items-center gap-3 sm:gap-4">
