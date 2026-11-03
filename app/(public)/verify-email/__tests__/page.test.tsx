@@ -22,7 +22,7 @@ describe("verify email page", () => {
     renderWithQuery(await VerifyEmailPage(props({ token: "abc" })));
     expect(screen.getByRole("heading", { level: 1 })).toHaveTextContent("Verify email");
     expect(screen.getByRole("status")).toHaveTextContent("Verifying your email…");
-    expect(metadata.title).toBe("Verify email · URL Shortener");
+    expect(metadata.title).toBe("Verify email · Fast Shortener");
   });
 
   it.each([{}, { token: "" }, { token: ["a", "b"] }])("treats %j as a missing token", async (q) => {

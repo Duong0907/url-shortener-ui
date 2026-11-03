@@ -7,6 +7,6 @@ describe("settings page", () => {
     render(<SettingsPage />);
     expect(screen.getByRole("heading", { level: 1 })).toHaveTextContent("Settings");
     expect(screen.getByText("Nothing here yet.")).toBeInTheDocument();
-    expect(metadata.title).toBe("Settings · URL Shortener");
+    expect(metadata.title).toBe("Settings · Fast Shortener");
   });
 });

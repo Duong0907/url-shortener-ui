@@ -1,6 +1,6 @@
 import Link from "next/link";
 
-import { wordmark } from "@/components/app-shell/sidebar-nav";
+import { LogoMark, wordmark } from "@/components/app-shell/sidebar-nav";
 import { ThemeSwitch } from "@/components/theme-switch";
 import { UserMenu } from "@/features/auth/components/user-menu";
 
@@ -12,7 +12,10 @@ export function NavBar() {
           href="/"
           className="rounded-sm outline-none focus-visible:ring-2 focus-visible:ring-highlight"
         >
-          <span className={wordmark}>SHORTENER</span>
+          <span className={wordmark}>
+            <LogoMark />
+            FAST SHORTENER
+          </span>
         </Link>
         <div className="flex items-center gap-3 sm:gap-4">
           <ThemeSwitch />

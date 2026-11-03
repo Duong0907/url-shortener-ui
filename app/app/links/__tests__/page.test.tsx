@@ -11,6 +11,6 @@ describe("links page", () => {
     (listLinks as jest.Mock).mockResolvedValue({ items: [], nextCursor: null });
     renderWithQuery(<LinksPage />);
     expect(await screen.findByText("No links yet.")).toBeInTheDocument();
-    expect(metadata.title).toBe("My links · URL Shortener");
+    expect(metadata.title).toBe("My links · Fast Shortener");
   });
 });

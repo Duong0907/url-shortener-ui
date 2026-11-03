@@ -6,7 +6,7 @@ import { Drawer } from "@base-ui/react/drawer";
 import { cn } from "cn";
 import { ChevronLeft, Menu } from "lucide-react";
 
-import { SidebarNav, wordmark } from "@/components/app-shell/sidebar-nav";
+import { LogoMark, SidebarNav, wordmark } from "@/components/app-shell/sidebar-nav";
 import { ThemeSwitch } from "@/components/theme-switch";
 import { Button } from "@/components/ui/button";
 
@@ -24,7 +24,7 @@ export function AppShell({ children }: { children: React.ReactNode }) {
         <aside
           className={cn(
             "h-full overflow-hidden transition-[width] duration-300 ease-out motion-reduce:transition-none",
-            collapsed ? "w-16" : "w-52",
+            collapsed ? "w-16" : "w-64",
           )}
         >
           <SidebarNav collapsed={collapsed} />
@@ -50,7 +50,10 @@ export function AppShell({ children }: { children: React.ReactNode }) {
       <div className="flex min-w-0 flex-1 flex-col">
         {/* Wordmark on the left like the public nav; the menu sits right, within thumb reach. */}
         <header className="flex min-h-14.25 items-center justify-between gap-3 border-b border-border px-4 md:hidden">
-          <span className={wordmark}>SHORTENER</span>
+          <span className={wordmark}>
+            <LogoMark />
+            FAST SHORTENER
+          </span>
           <div className="flex items-center gap-2">
             <ThemeSwitch />
             <Drawer.Root open={open} onOpenChange={setOpen} swipeDirection="right">

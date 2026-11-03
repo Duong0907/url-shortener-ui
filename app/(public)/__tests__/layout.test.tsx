@@ -16,8 +16,8 @@ describe("PublicLayout", () => {
     );
     expect(html).toContain("<p>kid</p>");
     expect(html).toContain('href="/"');
-    expect(html).toContain("SHORTENER");
+    expect(html).toContain("FAST SHORTENER");
     expect(html).toContain('aria-label="Dark mode"');
-    expect(html).toContain(`Shortener © ${new Date().getFullYear()}`);
+    expect(html).toContain(`Fast Shortener © ${new Date().getFullYear()}`);
   });
 });

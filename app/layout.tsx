@@ -26,7 +26,7 @@ const plexMono = IBM_Plex_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "URL Shortener",
+  title: "Fast Shortener",
   description: "Shorten long links.",
 };
 

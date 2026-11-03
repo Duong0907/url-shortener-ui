@@ -8,6 +8,6 @@ describe("shorten page", () => {
     renderWithQuery(<ShortenPage />);
     expect(screen.getByRole("heading", { level: 1 })).toHaveTextContent("Shorten");
     expect(screen.getByLabelText("URL to shorten")).toBeInTheDocument();
-    expect(metadata.title).toBe("Shorten · URL Shortener");
+    expect(metadata.title).toBe("Shorten · Fast Shortener");
   });
 });
