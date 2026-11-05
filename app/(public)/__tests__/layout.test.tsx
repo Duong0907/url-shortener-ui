@@ -2,6 +2,9 @@ import { renderToStaticMarkup } from "react-dom/server";
 
 import PublicLayout from "@/app/(public)/layout";
 
+// Static render has no app router; One Tap needs one for its redirect.
+jest.mock("next/navigation", () => ({ useRouter: () => ({ replace: jest.fn() }) }));
+
 describe("PublicLayout", () => {
   // jsdom has no matchMedia; next-themes reads it while rendering.
   beforeAll(() => {

@@ -41,7 +41,22 @@ export async function login(email: string, password: string): Promise<void> {
   apply(await api.login(email, password));
 }
 
+export async function loginWithGoogle(credential: string): Promise<void> {
+  apply(await api.googleOneTap(credential));
+}
+
+let loggedOut = false;
+
+// True after the user logs out in this page load. One Tap stays hidden until a reload.
+export function hasLoggedOut(): boolean {
+  return loggedOut;
+}
+
 export async function logout(): Promise<void> {
   await api.logout().catch(() => {});
+  // Set before the status changes, so One Tap sees it on the anon render.
+  loggedOut = true;
+  // Without this, One Tap's auto_select signs the user straight back in.
+  window.google?.accounts.id.disableAutoSelect();
   apply(null);
 }

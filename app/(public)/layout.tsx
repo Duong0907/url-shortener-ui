@@ -1,5 +1,6 @@
 import { Footer } from "@/components/footer";
 import { NavBar } from "@/components/nav-bar";
+import { GoogleOneTap } from "@/features/auth/components/google-one-tap";
 
 export default function PublicLayout({ children }: { children: React.ReactNode }) {
   return (
@@ -7,6 +8,7 @@ export default function PublicLayout({ children }: { children: React.ReactNode }
       <NavBar />
       <div className="w-full md:max-w-250 md:min-w-139">{children}</div>
       <Footer />
+      <GoogleOneTap />
     </div>
   );
 }
