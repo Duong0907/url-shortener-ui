@@ -69,6 +69,18 @@ describe("logout", () => {
     expect(state()).toEqual({ status: "anon", token: null, email: null });
   });
 
+  it("stops One Tap from signing the user back in", async () => {
+    const disableAutoSelect = jest.fn();
+    window.google = {
+      accounts: { id: { initialize: jest.fn(), prompt: jest.fn(), disableAutoSelect } },
+    };
+    signIn("tok");
+    fetchMock.mockResolvedValueOnce(reply(204));
+    await logout();
+    expect(disableAutoSelect).toHaveBeenCalled();
+    delete window.google;
+  });
+
   it("clears the session even when the server is unreachable", async () => {
     signIn("tok");
     fetchMock.mockRejectedValueOnce(new TypeError("fail"));

@@ -54,6 +54,16 @@ export async function login(email: string, password: string): Promise<string> {
   return accessToken(res);
 }
 
+// Exchanges the Google One Tap credential for a session. Sets the refresh cookie like login.
+export async function googleOneTap(credential: string): Promise<string> {
+  const res = await post("/api/auth/google/one-tap", { credential });
+
+  if (res.status === 403) throw new EmailNotVerifiedError();
+  if (!res.ok) throw new Error(GENERIC_MESSAGE);
+
+  return accessToken(res);
+}
+
 // Returns null when there is no valid session.
 export async function refresh(): Promise<string | null> {
   const res = await post("/api/auth/refresh");

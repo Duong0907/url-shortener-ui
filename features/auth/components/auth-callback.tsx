@@ -9,7 +9,7 @@ import { DEFAULT_NEXT, takeNext } from "@/features/auth/next-path";
 import { refreshSession } from "@/features/auth/store";
 
 // access_denied means the user cancelled at Google, so log in shows no message.
-function loginUrl(error: string | null, next: string | undefined) {
+export function loginUrl(error: string | null, next: string | undefined) {
   const query = new URLSearchParams();
   if (error && error !== "access_denied") query.set("error", error);
   if (next) query.set("next", next);
